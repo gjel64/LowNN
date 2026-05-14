@@ -28,6 +28,7 @@ TEST(TensorTest, Creation) {
     std::shared_ptr<Tensor> t_2 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
     EXPECT_THROW(t_2->item(), std::invalid_argument);
     EXPECT_EQ( (*(*t_2)[1])[1]->item(), 4.0f);
+    EXPECT_EQ( ((*t_2)[std::vector<int>{1, 1}])->item(), 4.0f);
     EXPECT_EQ(t_2->shape().size(), 2);
     EXPECT_EQ(t_2->shape()[0], 2);
     EXPECT_EQ(t_2->shape()[1], 2);

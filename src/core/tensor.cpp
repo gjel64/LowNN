@@ -54,6 +54,20 @@ std::shared_ptr<Tensor> Tensor::operator[](int index) {
     throw std::invalid_argument("Unsupported tensor dimension");
 }
 
+std::shared_ptr<Tensor> Tensor::operator[](std::vector<int> indices) {
+    if (indices.size() > _shape.size() && _shape.size() >= 2) {
+        throw std::invalid_argument("Number of indices must match tensor dimensions");
+    }
+    std::size_t offset = 0;
+    for (std::size_t i = 0; i < indices.size(); i++) {
+        if (indices[i] < 0 || indices[i] >= _shape[i]) {
+            throw std::out_of_range("Index out of range");
+        }
+        offset += indices[i] * _strides[i];
+    }
+    return std::make_shared<Tensor>(_data[offset]);
+}
+
 std::vector<std::size_t> Tensor::shape() const {
     return _shape;
 }
