@@ -1,0 +1,17 @@
+{
+  "tests": 1,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "TensorTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "Creation",
+          "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/tensor_test.cpp",
+          "line": 6
+        }
+      ]
+    }
+  ]
+}
