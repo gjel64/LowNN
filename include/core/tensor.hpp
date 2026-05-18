@@ -71,7 +71,7 @@ public:
             throw std::invalid_argument("Fail at init : Data need a regular shape");
         }
     }
-    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape) : _data(data), _shape(shape), _offset(0) {
+    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset) : _data(data), _shape(shape), _offset(offset) {
         std::size_t size = 1;
         for (std::size_t s : shape){
             size *= s;
@@ -82,6 +82,7 @@ public:
             _strides.insert(_strides.begin(), _shape[i + 1] * _strides.front());
         }
     }
+
 
     // -------- Methods --------
     const float item() const;

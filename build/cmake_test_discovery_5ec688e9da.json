@@ -25,12 +25,12 @@
         {
           "name": "BasicMethods",
           "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/tensor_test.cpp",
-          "line": 50
+          "line": 60
         },
         {
           "name": "Indexing",
           "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/tensor_test.cpp",
-          "line": 62
+          "line": 72
         }
       ]
     }

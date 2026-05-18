@@ -8,6 +8,13 @@ struct is_std_vector : std::false_type {}; // checked at compile
 template<typename U, typename Alloc>
 struct is_std_vector<std::vector<U, Alloc>> : std::true_type {}; // checked at compile
 
+template<typename T>
+struct is_c_array : std::false_type {};
+template<typename T, size_t N>
+struct is_c_array<T[N]> : std::true_type {}; // taille connue
+template<typename T>
+struct is_c_array<T[]> : std::true_type {};  // taille inconnue
+
 class VecUtils {
 public:
     template<typename V>
