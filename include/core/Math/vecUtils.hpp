@@ -29,7 +29,7 @@ public:
         std::vector<size_t> shape = { v.size() };
 
         if constexpr (is_std_vector<typename V::value_type>::value) {
-            if (!v.empty()) {
+            if (!v.empty()){
                 auto sub_shape = get_shape(v[0]);
                 shape.insert(shape.end(), sub_shape.begin(), sub_shape.end());
             }

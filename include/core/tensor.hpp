@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include <memory>
 #include <iostream>
 #include "core/Math/vecUtils.hpp"
@@ -21,10 +20,11 @@ class Tensor {
 private:
 
     // -------- Attributes --------
-    std::vector<float> _data;
+    std::shared_ptr<float[]> _data;
     std::vector<std::size_t> _shape;
     std::vector<std::size_t> _strides;
     std::size_t _size;
+    std::size_t _offset = 0; // slicing offset
 
     // -------- Private Methods --------
     
@@ -32,18 +32,24 @@ private:
 public:
     // -------- Init --------
     template<typename V>
-    Tensor(V data){
+    Tensor(V data) : _offset(0){
         if constexpr (std::is_floating_point_v<V>) 
         {
-            _data = std::vector{data};
-            _size = _data.size();
-            _shape = {_data.size()};
+            _data = std::make_shared<float[]>(1);
+            _data[0] = data;
+            _size = 1;
+            _shape = {1};
             _strides = {};
         } 
         else if constexpr (is_std_vector<V>::value) 
         {
-            VecUtils::flatten_into(data, _data);
-            _size = _data.size();
+            std::vector<float> flat_data;
+            VecUtils::flatten_into(data, flat_data);
+
+            _data = std::make_shared<float[]>(flat_data.size());
+            std::copy(flat_data.begin(), flat_data.end(), _data.get());
+            
+            _size = flat_data.size();
             _shape = VecUtils::get_shape(data);
             _strides = std::vector<std::size_t>{1};
             for (std::size_t i = 0; i < _shape.size() - 1; i++) {
@@ -65,8 +71,12 @@ public:
             throw std::invalid_argument("Fail at init : Data need a regular shape");
         }
     }
-    Tensor(std::vector<float> data, std::vector<std::size_t> shape) : _data(data), _shape(shape) {
-        _size = _data.size();
+    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape) : _data(data), _shape(shape), _offset(0) {
+        std::size_t size = 1;
+        for (std::size_t s : shape){
+            size *= s;
+        }
+        _size = size;
         _strides = std::vector<std::size_t>{1};
         for (std::size_t i = 0; i < _shape.size() - 1; i++) {
             _strides.insert(_strides.begin(), _shape[i + 1] * _strides.front());
@@ -84,9 +94,8 @@ public:
         if (sizeof...(indices) > _shape.size()) {
             throw std::invalid_argument("Too many indices for tensor");
         }
-
-
-        // only support int indexing for now
+        
+        // recup index of data
         std::size_t index_of_data = 0;
         std::vector<int> vec = {indices...};
         for (std::size_t i = 0; i < vec.size(); i++)
@@ -97,11 +106,13 @@ public:
             index_of_data += _strides[i] * vec[i];
         }
 
+
+
         return std::make_shared<Tensor>(_data[index_of_data]);
     }
 
     // -------- Getters --------
-    const std::vector<float>& data() const { return _data; }
+    const std::shared_ptr<float[]> data() const { return _data; }
     const std::vector<std::size_t>& shape() const { return _shape; }
     const std::vector<std::size_t>& strides() const { return _strides; }
     std::size_t size() const { return _size; }

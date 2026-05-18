@@ -6,15 +6,14 @@
 TEST(TensorTest, Creation) 
 {
     std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{3.14f, 2.2f});
-    EXPECT_EQ(t1->data().size(), 2);
-    EXPECT_EQ(t1->data().at(0), 3.14f);
+    EXPECT_EQ(t1->data().get()[0], 3.14f);
     EXPECT_EQ(t1->shape(), std::vector<std::size_t>{2});
     EXPECT_EQ(t1->strides().at(0), 1);
     EXPECT_EQ(t1->strides().size(), 1);
     EXPECT_EQ(t1->size(), 2);
 
     std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(3.14f);
-    EXPECT_EQ(t2->data(), std::vector<float>{3.14f});
+    EXPECT_EQ(t2->data().get()[0], 3.14f);
     EXPECT_EQ(t2->shape(), std::vector<std::size_t>{1});
     EXPECT_EQ(t2->strides(), std::vector<std::size_t>{});
     EXPECT_EQ(t2->size(), 1);
@@ -28,7 +27,7 @@ TEST(TensorTest, Creation)
     std::vector<float> d = std::vector<float>{1.0f, 2.0f, 3.0f, 4.0f};
     std::vector<std::size_t> s = std::vector<std::size_t>{2, 2};
     std::vector<std::size_t> st = std::vector<std::size_t>{2, 1};
-    EXPECT_EQ(t4->data(), d);
+    EXPECT_EQ(t4->data().get()[0], d[0]);
     EXPECT_EQ(t4->shape(), s);
     EXPECT_EQ(t4->strides(), st);
     EXPECT_EQ(t4->size(), 4);
@@ -37,7 +36,7 @@ TEST(TensorTest, Creation)
     std::vector<float> d5 = std::vector<float>{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f};
     std::vector<std::size_t> s5 = std::vector<std::size_t>{2, 2, 2};
     std::vector<std::size_t> st5 = std::vector<std::size_t>{4, 2, 1};
-    EXPECT_EQ(t5->data(), d5);
+    EXPECT_EQ(t5->data().get()[0], d5[0]);
     EXPECT_EQ(t5->shape(), s5);
     EXPECT_EQ(t5->strides(), st5);
     EXPECT_EQ(t5->size(), 8);

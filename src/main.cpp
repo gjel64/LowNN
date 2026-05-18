@@ -5,11 +5,10 @@
 int main() {
     std::cout << "Hello, LowNN!" << std::endl;
 
-    std::vector<float> data = {1.0f, 2.0f, 3.0f, 4.0f};
-    std::cout << (*data.begin()) << " " << (*(data.end() - 1)) << "\n";
-
-    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(data);
-    std::cout << (*t1)[1]->item() << "\n";
+    
+    
+    /*std::vector<float> data = {1.0f, 2.0f, 3.0f, 4.0f};
+    std::cout << (*data.begin()) << " " << (*(data.end() - 1)) << "\n";*/
 
 
     /*
