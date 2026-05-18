@@ -24,7 +24,7 @@ private:
     std::size_t _size;
 
     // -------- Private Methods --------
-
+    
 
 public:
     // -------- Init --------
@@ -50,19 +50,28 @@ public:
         }
         else 
         {
-            throw std::invalid_argument("Unsupported data type for Tensor");
+            throw std::invalid_argument("Fail at init : Unsupported data type for Tensor");
+        }
+
+        // Test if data shape is good
+        std::size_t tot_shape_size = 1;
+        for (std::size_t s : _shape){
+            tot_shape_size *= s;
+        }
+        if (_size != tot_shape_size) {
+            throw std::invalid_argument("Fail at init : Data need a regular shape");
         }
     }
 
-    // -------- Methods --------
+    // -------- Basic Methods --------
     const float item() const;
     const std::string to_string() const;
     void print();
-
 
     // -------- Getters --------
     const std::vector<float>& data() const { return _data; }
     const std::vector<std::size_t>& shape() const { return _shape; }
     const std::vector<std::size_t>& strides() const { return _strides; }
     std::size_t size() const { return _size; }
+
 };

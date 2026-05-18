@@ -41,6 +41,11 @@ TEST(TensorTest, Creation)
     EXPECT_EQ(t5->shape(), s5);
     EXPECT_EQ(t5->strides(), st5);
     EXPECT_EQ(t5->size(), 8);
+
+    EXPECT_THROW( 
+        std::shared_ptr<Tensor> t6 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {2.0f}}), 
+        std::invalid_argument
+    );
 }
 
 TEST(TensorTest, BasicMethods)
