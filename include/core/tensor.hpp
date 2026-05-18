@@ -2,10 +2,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
-#include <typeinfo>
-#include <type_traits>
 #include "core/Math/vecUtils.hpp"
-#include <cstdarg> // for variadic functions
 
 /*
 must TODO:
@@ -13,10 +10,10 @@ must TODO:
     - operations
     - indexing
 
-
 wanted TODO:
     - print with shape
-    - negative indexing
+    - negative indexing 
+    - slicing (struct Slice { int start, int end, int step } and operator[](Slice...))
 */
 
 
@@ -80,6 +77,28 @@ public:
     const float item() const;
     const std::string to_string() const;
     void print();
+
+    // -------- Indexing --------
+    template <typename... Args>
+    std::shared_ptr<Tensor> operator[](Args... indices) {
+        if (sizeof...(indices) > _shape.size()) {
+            throw std::invalid_argument("Too many indices for tensor");
+        }
+
+
+        // only support int indexing for now
+        std::size_t index_of_data = 0;
+        std::vector<int> vec = {indices...};
+        for (std::size_t i = 0; i < vec.size(); i++)
+        {
+            if (vec[i] < 0 || vec[i] >= _shape[i]) {
+                throw std::out_of_range("Index out of range");
+            }
+            index_of_data += _strides[i] * vec[i];
+        }
+
+        return std::make_shared<Tensor>(_data[index_of_data]);
+    }
 
     // -------- Getters --------
     const std::vector<float>& data() const { return _data; }

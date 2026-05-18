@@ -59,3 +59,12 @@ TEST(TensorTest, BasicMethods)
     EXPECT_STREQ(t2->to_string().c_str(), "Tensor ( data: [1.000000, 2.000000] )");
 
 } 
+
+TEST(TensorTest, Indexing)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
+    EXPECT_FLOAT_EQ( ((*t1)[0, 0])->item(), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t1)[1, 0])->item(), 3.0f );
+    EXPECT_THROW( ((*t1)[2, 0])->item(), std::out_of_range );
+    EXPECT_THROW( ((*t1)[1, 0, 0]), std::invalid_argument );
+}

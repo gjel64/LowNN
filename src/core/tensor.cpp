@@ -6,7 +6,7 @@
 const float Tensor::item() const 
 { 
     if (_size != 1) {
-        throw std::runtime_error("Tensor does not contain exactly one item");
+        throw std::runtime_error("Tensor does not contain one item");
     }
     return _data[0]; 
 }
