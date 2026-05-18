@@ -5,12 +5,18 @@
 #include <typeinfo>
 #include <type_traits>
 #include "core/Math/vecUtils.hpp"
+#include <cstdarg> // for variadic functions
 
 /*
-TODO:
+must TODO:
+    - broadcasting
+    - operations
+    - indexing
+
+
+wanted TODO:
     - print with shape
     - negative indexing
-    - broadcasting
 */
 
 
@@ -62,8 +68,15 @@ public:
             throw std::invalid_argument("Fail at init : Data need a regular shape");
         }
     }
+    Tensor(std::vector<float> data, std::vector<std::size_t> shape) : _data(data), _shape(shape) {
+        _size = _data.size();
+        _strides = std::vector<std::size_t>{1};
+        for (std::size_t i = 0; i < _shape.size() - 1; i++) {
+            _strides.insert(_strides.begin(), _shape[i + 1] * _strides.front());
+        }
+    }
 
-    // -------- Basic Methods --------
+    // -------- Methods --------
     const float item() const;
     const std::string to_string() const;
     void print();

@@ -1,5 +1,8 @@
 #include "core/tensor.hpp"
 
+
+// ------------------------ Methods ------------------------
+
 const float Tensor::item() const 
 { 
     if (_size != 1) {
@@ -32,3 +35,7 @@ void Tensor::print()
 {
     std::cout << to_string() << "\n";
 }
+
+
+
+// ------------------------ Private Methods ------------------------ 

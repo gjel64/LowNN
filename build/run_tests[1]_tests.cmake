@@ -3,5 +3,5 @@ set_tests_properties([=[VecUtilsTest.FlattenInto]=]  PROPERTIES DEF_SOURCE_LINE 
 add_test([=[TensorTest.Creation]=]  [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/run_tests]==] [==[--gtest_filter=TensorTest.Creation]==] --gtest_also_run_disabled_tests)
 set_tests_properties([=[TensorTest.Creation]=]  PROPERTIES DEF_SOURCE_LINE [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/tensor_test.cpp:6]==] WORKING_DIRECTORY [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build]==] SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
 add_test([=[TensorTest.BasicMethods]=]  [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/run_tests]==] [==[--gtest_filter=TensorTest.BasicMethods]==] --gtest_also_run_disabled_tests)
-set_tests_properties([=[TensorTest.BasicMethods]=]  PROPERTIES DEF_SOURCE_LINE [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/tensor_test.cpp:46]==] WORKING_DIRECTORY [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build]==] SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set_tests_properties([=[TensorTest.BasicMethods]=]  PROPERTIES DEF_SOURCE_LINE [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/tensor_test.cpp:51]==] WORKING_DIRECTORY [==[/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build]==] SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
 set(  run_tests_TESTS VecUtilsTest.FlattenInto TensorTest.Creation TensorTest.BasicMethods)
