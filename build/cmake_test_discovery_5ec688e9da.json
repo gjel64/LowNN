@@ -1,5 +1,5 @@
 {
-  "tests": 3,
+  "tests": 4,
   "name": "AllTests",
   "testsuites": [
     {
@@ -15,7 +15,7 @@
     },
     {
       "name": "TensorTest",
-      "tests": 2,
+      "tests": 3,
       "testsuite": [
         {
           "name": "Creation",
@@ -26,6 +26,11 @@
           "name": "BasicMethods",
           "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/tensor_test.cpp",
           "line": 51
+        },
+        {
+          "name": "Indexing",
+          "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/tensor_test.cpp",
+          "line": 63
         }
       ]
     }
