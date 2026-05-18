@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcore.a CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o CMakeFiles/core.dir/src/core/tensor.cpp.o
-/usr/bin/ranlib libcore.a
