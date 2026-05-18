@@ -72,10 +72,24 @@ include CMakeFiles/run_tests.dir/flags.make
 CMakeFiles/run_tests.dir/codegen:
 .PHONY : CMakeFiles/run_tests.dir/codegen
 
+CMakeFiles/run_tests.dir/tests/math_test.cpp.o: CMakeFiles/run_tests.dir/flags.make
+CMakeFiles/run_tests.dir/tests/math_test.cpp.o: /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/math_test.cpp
+CMakeFiles/run_tests.dir/tests/math_test.cpp.o: CMakeFiles/run_tests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/run_tests.dir/tests/math_test.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/run_tests.dir/tests/math_test.cpp.o -MF CMakeFiles/run_tests.dir/tests/math_test.cpp.o.d -o CMakeFiles/run_tests.dir/tests/math_test.cpp.o -c /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/math_test.cpp
+
+CMakeFiles/run_tests.dir/tests/math_test.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/run_tests.dir/tests/math_test.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/math_test.cpp > CMakeFiles/run_tests.dir/tests/math_test.cpp.i
+
+CMakeFiles/run_tests.dir/tests/math_test.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/run_tests.dir/tests/math_test.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/math_test.cpp -o CMakeFiles/run_tests.dir/tests/math_test.cpp.s
+
 CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o: CMakeFiles/run_tests.dir/flags.make
 CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o: /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/tensor_test.cpp
 CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o: CMakeFiles/run_tests.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o -MF CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o.d -o CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o -c /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/tensor_test.cpp
 
 CMakeFiles/run_tests.dir/tests/tensor_test.cpp.i: cmake_force
@@ -88,11 +102,13 @@ CMakeFiles/run_tests.dir/tests/tensor_test.cpp.s: cmake_force
 
 # Object files for target run_tests
 run_tests_OBJECTS = \
+"CMakeFiles/run_tests.dir/tests/math_test.cpp.o" \
 "CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o"
 
 # External object files for target run_tests
 run_tests_EXTERNAL_OBJECTS =
 
+run_tests: CMakeFiles/run_tests.dir/tests/math_test.cpp.o
 run_tests: CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o
 run_tests: CMakeFiles/run_tests.dir/build.make
 run_tests: libcore.a
@@ -100,7 +116,7 @@ run_tests: lib/libgtest.a
 run_tests: lib/libgtest_main.a
 run_tests: lib/libgtest.a
 run_tests: CMakeFiles/run_tests.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable run_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable run_tests"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/run_tests.dir/link.txt --verbose=$(VERBOSE)
 	/Users/etudiant/local/cmake/CMake.app/Contents/bin/cmake -D TEST_TARGET=run_tests -D TEST_EXECUTABLE=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/run_tests -D TEST_EXECUTOR= -D TEST_WORKING_DIR=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D TEST_FILTER= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=run_tests_TESTS -D CTEST_FILE=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/run_tests[1]_tests.cmake -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_DISCOVERY_EXTRA_ARGS= -D TEST_XML_OUTPUT_DIR= -P /Users/etudiant/local/cmake/CMake.app/Contents/share/cmake-4.2/Modules/GoogleTestAddTests.cmake
 

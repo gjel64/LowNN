@@ -1,84 +1,34 @@
-#include "core/tensor.h"
+#include "core/tensor.hpp"
 
-
-
-// -------------------- Init --------------------
-
-Tensor::Tensor(float data) {
-    _data.push_back(data);
-    _shape.push_back(1);
-    _strides.push_back(1);
-    _size = 1;
-}
-
-Tensor::Tensor(std::vector<float> data) {
-    _data = data;
-    _shape.push_back(data.size());
-    _strides.push_back(1);
-    _size = data.size();
-}
-
-Tensor::Tensor(std::vector<std::vector<float>> data) {
-    _shape.push_back(data.size());
-    _shape.push_back(data[0].size());
-    _strides.push_back(_shape[1]);
-    _strides.push_back(1);
-    _size = _shape[0] * _shape[1];
-    for (std::vector<float> row : data) {
-        _data.insert(_data.end(), row.begin(), row.end());
-    }
-}
-
-
-
-// -------------------- Getters / Setters --------------------
-
-float Tensor::item() const {
+const float Tensor::item() const 
+{ 
     if (_size != 1) {
-        throw std::invalid_argument("Tensor has more than one element");
+        throw std::runtime_error("Tensor does not contain exactly one item");
     }
-    return _data[0];
+    return _data[0]; 
 }
 
-std::shared_ptr<Tensor> Tensor::operator[](int index) {
-    if (index < 0 || index > _shape[0]) {
-        throw std::out_of_range("Index out of range");
-    }
-    if (_shape.size() == 1) {
-        return std::make_shared<Tensor>(_data[index]);
-    }
-    if (_shape.size() == 2) {
-        std::vector<float> row(_data.begin() + index * _strides[0], _data.begin() + (index + 1) * _strides[0]);
-        return std::make_shared<Tensor>(row);
-    }
-    throw std::invalid_argument("Unsupported tensor dimension");
-}
+const std::string Tensor::to_string() const 
+{
+    std::string str = "Tensor ( ";
 
-std::shared_ptr<Tensor> Tensor::operator[](std::vector<int> indices) {
-    if (indices.size() > _shape.size() && _shape.size() >= 2) {
-        throw std::invalid_argument("Number of indices must match tensor dimensions");
-    }
-    std::size_t offset = 0;
-    for (std::size_t i = 0; i < indices.size(); i++) {
-        if (indices[i] < 0 || indices[i] >= _shape[i]) {
-            throw std::out_of_range("Index out of range");
+    // data
+    str += "data: ";
+    str += "[";
+    for (std::size_t i = 0; i < _size; i++) {
+        str += std::to_string(_data[i]);
+        if (i < _size - 1) {
+            str += ", ";
         }
-        offset += indices[i] * _strides[i];
     }
-    return std::make_shared<Tensor>(_data[offset]);
+    str += "] ";
+
+
+    str += ")";
+    return str;
 }
 
-std::vector<std::size_t> Tensor::shape() const {
-    return _shape;
+void Tensor::print() 
+{
+    std::cout << to_string() << "\n";
 }
-
-std::vector<std::size_t> Tensor::strides() const {
-    return _strides;
-}
-
-std::size_t Tensor::size() const {
-    return _size;
-}
-
-
-

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <vector>
-#include "core/Math/vecUtils.h"
+#include "core/Math/vecUtils.hpp"
 
 TEST(VecUtilsTest, FlattenInto) 
 {

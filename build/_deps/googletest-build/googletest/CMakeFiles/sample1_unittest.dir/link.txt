@@ -1,1 +1,0 @@
-/usr/bin/c++ -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/sample1_unittest.dir/samples/sample1_unittest.cc.o CMakeFiles/sample1_unittest.dir/samples/sample1.cc.o -o sample1_unittest  ../../../lib/libgtest_main.a ../../../lib/libgtest.a

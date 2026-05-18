@@ -1,5 +1,5 @@
-CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o: \
-  /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/tensor_test.cpp \
+CMakeFiles/run_tests.dir/tests/math_test.cpp.o: \
+  /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/tests/math_test.cpp \
   /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/_deps/googletest-src/googletest/include/gtest/gtest.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
@@ -842,5 +842,4 @@ CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o: \
   /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/_deps/googletest-src/googletest/include/gtest/gtest-typed-test.h \
   /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/_deps/googletest-src/googletest/include/gtest/gtest_pred_impl.h \
   /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/_deps/googletest-src/googletest/include/gtest/gtest_prod.h \
-  /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/include/core/tensor.hpp \
   /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/include/core/Math/vecUtils.hpp

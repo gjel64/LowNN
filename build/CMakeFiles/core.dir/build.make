@@ -72,10 +72,24 @@ include CMakeFiles/core.dir/flags.make
 CMakeFiles/core.dir/codegen:
 .PHONY : CMakeFiles/core.dir/codegen
 
+CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o: CMakeFiles/core.dir/flags.make
+CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o: /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/src/core/Math/vecUtils.cpp
+CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o: CMakeFiles/core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o -MF CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o.d -o CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o -c /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/src/core/Math/vecUtils.cpp
+
+CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/src/core/Math/vecUtils.cpp > CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.i
+
+CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/src/core/Math/vecUtils.cpp -o CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.s
+
 CMakeFiles/core.dir/src/core/tensor.cpp.o: CMakeFiles/core.dir/flags.make
 CMakeFiles/core.dir/src/core/tensor.cpp.o: /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/src/core/tensor.cpp
 CMakeFiles/core.dir/src/core/tensor.cpp.o: CMakeFiles/core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/core.dir/src/core/tensor.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/core.dir/src/core/tensor.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/core.dir/src/core/tensor.cpp.o -MF CMakeFiles/core.dir/src/core/tensor.cpp.o.d -o CMakeFiles/core.dir/src/core/tensor.cpp.o -c /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/src/core/tensor.cpp
 
 CMakeFiles/core.dir/src/core/tensor.cpp.i: cmake_force
@@ -88,15 +102,17 @@ CMakeFiles/core.dir/src/core/tensor.cpp.s: cmake_force
 
 # Object files for target core
 core_OBJECTS = \
+"CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o" \
 "CMakeFiles/core.dir/src/core/tensor.cpp.o"
 
 # External object files for target core
 core_EXTERNAL_OBJECTS =
 
+libcore.a: CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o
 libcore.a: CMakeFiles/core.dir/src/core/tensor.cpp.o
 libcore.a: CMakeFiles/core.dir/build.make
 libcore.a: CMakeFiles/core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libcore.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library libcore.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/core.dir/link.txt --verbose=$(VERBOSE)
 

@@ -6,7 +6,7 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/Users/etudiant/Desktop/Perso/Prg/C++/LowNN/include -isystem /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/_deps/googletest-src/googletest/include -isystem /Users/etudiant/Desktop/Perso/Prg/C++/LowNN/build/_deps/googletest-src/googletest
 
-CXX_FLAGSarm64 = -g -std=c++2b -arch arm64  -DGTEST_HAS_PTHREAD=1  
+CXX_FLAGSarm64 = -std=c++2b -arch arm64  -DGTEST_HAS_PTHREAD=1  
 
-CXX_FLAGS = -g -std=c++2b -arch arm64  -DGTEST_HAS_PTHREAD=1  
+CXX_FLAGS = -std=c++2b -arch arm64  -DGTEST_HAS_PTHREAD=1  
 

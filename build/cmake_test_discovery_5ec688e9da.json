@@ -1,15 +1,31 @@
 {
-  "tests": 1,
+  "tests": 3,
   "name": "AllTests",
   "testsuites": [
     {
-      "name": "TensorTest",
+      "name": "VecUtilsTest",
       "tests": 1,
+      "testsuite": [
+        {
+          "name": "FlattenInto",
+          "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/math_test.cpp",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "name": "TensorTest",
+      "tests": 2,
       "testsuite": [
         {
           "name": "Creation",
           "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/tensor_test.cpp",
           "line": 6
+        },
+        {
+          "name": "BasicMethods",
+          "file": "\/Users\/etudiant\/Desktop\/Perso\/Prg\/C++\/LowNN\/tests\/tensor_test.cpp",
+          "line": 46
         }
       ]
     }

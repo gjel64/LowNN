@@ -262,135 +262,29 @@ gtest_main/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
 
-#=============================================================================
-# Target rules for targets named sample1_unittest
+src/core/Math/vecUtils.o: src/core/Math/vecUtils.cpp.o
+.PHONY : src/core/Math/vecUtils.o
 
-# Build rule for target.
-sample1_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample1_unittest
-.PHONY : sample1_unittest
+# target to build an object file
+src/core/Math/vecUtils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o
+.PHONY : src/core/Math/vecUtils.cpp.o
 
-# fast build rule for target.
-sample1_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample1_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample1_unittest.dir/build
-.PHONY : sample1_unittest/fast
+src/core/Math/vecUtils.i: src/core/Math/vecUtils.cpp.i
+.PHONY : src/core/Math/vecUtils.i
 
-#=============================================================================
-# Target rules for targets named sample2_unittest
+# target to preprocess a source file
+src/core/Math/vecUtils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.i
+.PHONY : src/core/Math/vecUtils.cpp.i
 
-# Build rule for target.
-sample2_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample2_unittest
-.PHONY : sample2_unittest
+src/core/Math/vecUtils.s: src/core/Math/vecUtils.cpp.s
+.PHONY : src/core/Math/vecUtils.s
 
-# fast build rule for target.
-sample2_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample2_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample2_unittest.dir/build
-.PHONY : sample2_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample3_unittest
-
-# Build rule for target.
-sample3_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample3_unittest
-.PHONY : sample3_unittest
-
-# fast build rule for target.
-sample3_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample3_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample3_unittest.dir/build
-.PHONY : sample3_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample4_unittest
-
-# Build rule for target.
-sample4_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample4_unittest
-.PHONY : sample4_unittest
-
-# fast build rule for target.
-sample4_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample4_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample4_unittest.dir/build
-.PHONY : sample4_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample5_unittest
-
-# Build rule for target.
-sample5_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample5_unittest
-.PHONY : sample5_unittest
-
-# fast build rule for target.
-sample5_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample5_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample5_unittest.dir/build
-.PHONY : sample5_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample6_unittest
-
-# Build rule for target.
-sample6_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample6_unittest
-.PHONY : sample6_unittest
-
-# fast build rule for target.
-sample6_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample6_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample6_unittest.dir/build
-.PHONY : sample6_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample7_unittest
-
-# Build rule for target.
-sample7_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample7_unittest
-.PHONY : sample7_unittest
-
-# fast build rule for target.
-sample7_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample7_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample7_unittest.dir/build
-.PHONY : sample7_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample8_unittest
-
-# Build rule for target.
-sample8_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample8_unittest
-.PHONY : sample8_unittest
-
-# fast build rule for target.
-sample8_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample8_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample8_unittest.dir/build
-.PHONY : sample8_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample9_unittest
-
-# Build rule for target.
-sample9_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample9_unittest
-.PHONY : sample9_unittest
-
-# fast build rule for target.
-sample9_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample9_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample9_unittest.dir/build
-.PHONY : sample9_unittest/fast
-
-#=============================================================================
-# Target rules for targets named sample10_unittest
-
-# Build rule for target.
-sample10_unittest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sample10_unittest
-.PHONY : sample10_unittest
-
-# fast build rule for target.
-sample10_unittest/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/sample10_unittest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/sample10_unittest.dir/build
-.PHONY : sample10_unittest/fast
+# target to generate assembly for a file
+src/core/Math/vecUtils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/core.dir/build.make CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.s
+.PHONY : src/core/Math/vecUtils.cpp.s
 
 src/core/tensor.o: src/core/tensor.cpp.o
 .PHONY : src/core/tensor.o
@@ -440,6 +334,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+tests/math_test.o: tests/math_test.cpp.o
+.PHONY : tests/math_test.o
+
+# target to build an object file
+tests/math_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/math_test.cpp.o
+.PHONY : tests/math_test.cpp.o
+
+tests/math_test.i: tests/math_test.cpp.i
+.PHONY : tests/math_test.i
+
+# target to preprocess a source file
+tests/math_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/math_test.cpp.i
+.PHONY : tests/math_test.cpp.i
+
+tests/math_test.s: tests/math_test.cpp.s
+.PHONY : tests/math_test.s
+
+# target to generate assembly for a file
+tests/math_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/math_test.cpp.s
+.PHONY : tests/math_test.cpp.s
+
 tests/tensor_test.o: tests/tensor_test.cpp.o
 .PHONY : tests/tensor_test.o
 
@@ -484,22 +402,18 @@ help:
 	@echo "... gtest_main"
 	@echo "... main"
 	@echo "... run_tests"
-	@echo "... sample10_unittest"
-	@echo "... sample1_unittest"
-	@echo "... sample2_unittest"
-	@echo "... sample3_unittest"
-	@echo "... sample4_unittest"
-	@echo "... sample5_unittest"
-	@echo "... sample6_unittest"
-	@echo "... sample7_unittest"
-	@echo "... sample8_unittest"
-	@echo "... sample9_unittest"
+	@echo "... src/core/Math/vecUtils.o"
+	@echo "... src/core/Math/vecUtils.i"
+	@echo "... src/core/Math/vecUtils.s"
 	@echo "... src/core/tensor.o"
 	@echo "... src/core/tensor.i"
 	@echo "... src/core/tensor.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... tests/math_test.o"
+	@echo "... tests/math_test.i"
+	@echo "... tests/math_test.s"
 	@echo "... tests/tensor_test.o"
 	@echo "... tests/tensor_test.i"
 	@echo "... tests/tensor_test.s"

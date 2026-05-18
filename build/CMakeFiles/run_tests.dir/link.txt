@@ -1,1 +1,1 @@
-/usr/bin/c++ -g -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o -o run_tests  libcore.a lib/libgtest.a lib/libgtest_main.a lib/libgtest.a
+/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/run_tests.dir/tests/math_test.cpp.o CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o -o run_tests  libcore.a lib/libgtest.a lib/libgtest_main.a lib/libgtest.a

@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o"
+  "CMakeFiles/core.dir/src/core/Math/vecUtils.cpp.o.d"
   "CMakeFiles/core.dir/src/core/tensor.cpp.o"
   "CMakeFiles/core.dir/src/core/tensor.cpp.o.d"
   "libcore.a"

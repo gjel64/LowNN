@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/run_tests.dir/tests/math_test.cpp.o"
+  "CMakeFiles/run_tests.dir/tests/math_test.cpp.o.d"
   "CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o"
   "CMakeFiles/run_tests.dir/tests/tensor_test.cpp.o.d"
   "run_tests"
