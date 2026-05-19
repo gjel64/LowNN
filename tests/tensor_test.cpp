@@ -75,6 +75,7 @@ TEST(TensorTest, Indexing)
     EXPECT_FLOAT_EQ( ((*t1)[0, 0])->item(), 1.0f );
     EXPECT_FLOAT_EQ( ((*t1)[1, 0])->item(), 3.0f );
     EXPECT_EQ( ((*t1)[1, 0])->data(), t1->data() );
+    EXPECT_EQ( ((*t1)[1, 0])->data().get(), t1->data().get() );
     EXPECT_THROW( ((*t1)[2, 0])->item(), std::out_of_range );
     EXPECT_THROW( ((*t1)[1, 0, 0]), std::invalid_argument );
 }
