@@ -6,13 +6,13 @@
 /*
 must TODO:
     - broadcasting
-    - operations
-    - indexing
+    - operations (+,-,*,/, matmul, etc.)
+    - indexing (slicing, offset)
+    - grads
 
 wanted TODO:
     - print with shape
     - negative indexing 
-    - slicing (struct Slice { int start, int end, int step } and operator[](Slice...))
 */
 
 
@@ -71,18 +71,7 @@ public:
             throw std::invalid_argument("Fail at init : Data need a regular shape");
         }
     }
-    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset) : _data(data), _shape(shape), _offset(offset) {
-        std::size_t size = 1;
-        for (std::size_t s : shape){
-            size *= s;
-        }
-        _size = size;
-        _strides = std::vector<std::size_t>{1};
-        for (std::size_t i = 0; i < _shape.size() - 1; i++) {
-            _strides.insert(_strides.begin(), _shape[i + 1] * _strides.front());
-        }
-    }
-
+    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::vector<std::size_t> strides); 
 
     // -------- Methods --------
     const float item() const;
@@ -109,7 +98,7 @@ public:
 
 
 
-        return std::make_shared<Tensor>(_data[index_of_data]);
+        return std::make_shared<Tensor>(_data, std::vector<std::size_t>{1}, _offset + index_of_data, std::vector<std::size_t>{});
     }
 
     // -------- Getters --------

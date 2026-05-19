@@ -48,7 +48,7 @@ TEST(TensorTest, Creation)
 
     std::shared_ptr<float[]> data_ptr = std::shared_ptr<float[]>(new float[4]{1.0f, 2.0f, 3.0f, 4.0f});
     std::shared_ptr<Tensor> t7 = std::make_shared<Tensor>(
-        data_ptr, std::vector<std::size_t>{2, 2}, 0
+        data_ptr, std::vector<std::size_t>{2, 2}, 0, std::vector<std::size_t>{2, 1}
     );
     EXPECT_EQ(t7->data().get()[0], 1.0f);
     EXPECT_EQ(t7->shape(), (std::vector<std::size_t>{2, 2}));
@@ -74,6 +74,7 @@ TEST(TensorTest, Indexing)
     std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
     EXPECT_FLOAT_EQ( ((*t1)[0, 0])->item(), 1.0f );
     EXPECT_FLOAT_EQ( ((*t1)[1, 0])->item(), 3.0f );
+    EXPECT_EQ( ((*t1)[1, 0])->data(), t1->data() );
     EXPECT_THROW( ((*t1)[2, 0])->item(), std::out_of_range );
     EXPECT_THROW( ((*t1)[1, 0, 0]), std::invalid_argument );
 }
