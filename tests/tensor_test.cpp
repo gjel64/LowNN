@@ -78,4 +78,31 @@ TEST(TensorTest, Indexing)
     EXPECT_EQ( ((*t1)[1, 0])->data().get(), t1->data().get() );
     EXPECT_THROW( ((*t1)[2, 0])->item(), std::out_of_range );
     EXPECT_THROW( ((*t1)[1, 0, 0]), std::invalid_argument );
+
+    EXPECT_EQ( ((*t1)[1])->data(), t1->data() );
+    EXPECT_EQ( ((*t1)[1])->shape(), std::vector<std::size_t>{2} );
+    EXPECT_EQ( ((*t1)[1])->offset(), 2 );
+    EXPECT_EQ( ((*t1)[1])->strides(), std::vector<std::size_t>{1} );
+    EXPECT_EQ( (*(*t1)[1])[0]->item(), 3.0f );
+    EXPECT_EQ( (*(*t1)[1])[1]->item(), 4.0f );
+
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    });
+    EXPECT_FLOAT_EQ( ((*t2)[0, 0, 0])->item(), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t2)[1, 0, 0])->item(), 5.0f );
+    EXPECT_EQ( ((*t2)[1, 0, 0])->data(), t2->data() );
+    EXPECT_EQ( ((*t2)[1, 0, 0])->data().get(), t2->data().get() );
+    EXPECT_THROW( ((*t2)[2, 0, 0])->item(), std::out_of_range );
+    EXPECT_THROW( ((*t2)[1, 1, 1, 1]), std::invalid_argument );
+    EXPECT_EQ( ((*t2)[1])->data(), t2->data() );
+    EXPECT_EQ( ((*t2)[1])->shape(), (std::vector<std::size_t>{2, 2}) );
+    EXPECT_EQ( ((*t2)[1])->offset(), 4 );
+    EXPECT_EQ( ((*t2)[1])->strides(), (std::vector<std::size_t>{2, 1}) );
+    EXPECT_EQ( ((*(*t2)[1])[0, 0]->item()), 5.0f );
+    EXPECT_EQ( ((*(*t2)[1])[0, 1]->item()), 6.0f );
+    EXPECT_EQ( ((*(*t2)[1])[1, 1]->item()), 8.0f );
+    EXPECT_EQ( ((*(*t2)[0])[1, 1]->item()), 4.0f );
+
+    
 }
