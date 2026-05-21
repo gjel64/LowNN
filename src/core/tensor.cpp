@@ -24,22 +24,7 @@ const float Tensor::item() const
 
 const std::string Tensor::to_string() const 
 {
-    std::string str = "Tensor ( ";
-
-    // data
-    str += "data: ";
-    str += "[";
-    for (std::size_t i = 0; i < _size; i++) {
-        str += std::to_string(_pdata[i]);
-        if (i < _size - 1) {
-            str += ", ";
-        }
-    }
-    str += "] ";
-
-
-    str += ")";
-    return str;
+    return "to_string not implemented yet";
 }
 
 void Tensor::print() 
@@ -49,4 +34,10 @@ void Tensor::print()
 
 
 
-// ------------------------ Private Methods ------------------------ 
+// ------------------------ Operators ------------------------ 
+
+std::shared_ptr<Tensor> Tensor::operator+ (std::shared_ptr<Tensor> other){
+        std::vector<std::size_t> result_shape = VecUtils::broadcast(this->shape(), other->shape());    
+
+        
+}

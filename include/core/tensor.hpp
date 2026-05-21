@@ -7,8 +7,9 @@
 must TODO:
     - broadcasting
     - operations (+,-,*,/, matmul, etc.)
-    - indexing (slicing, offset)
-    - grads
+    - indexing with :
+    - autograd (grad_fn, grad_accumulator, output_nr)
+    - flatten method (remove 1 dims)
 
 wanted TODO:
     - print with shape
@@ -25,8 +26,6 @@ private:
     std::vector<std::size_t> _strides;
     std::size_t _size;
     std::size_t _offset = 0; // slicing offset
-
-    // -------- Private Methods --------
     
 
 public:
@@ -116,6 +115,9 @@ public:
             return std::make_shared<Tensor>(_pdata, shape, offset, strides);
         }
     }
+
+    // -------- Operators --------
+    std::shared_ptr<Tensor> operator+ (std::shared_ptr<Tensor> other);
 
     // -------- Getters --------
     const std::shared_ptr<float[]> data() const { return _pdata; }

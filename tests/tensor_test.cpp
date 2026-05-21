@@ -61,11 +61,9 @@ TEST(TensorTest, BasicMethods)
 {
     std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{3.14f});
     EXPECT_FLOAT_EQ(t1->item(), 3.14f);
-    EXPECT_STREQ(t1->to_string().c_str(), "Tensor ( data: [3.140000] )");
 
     std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<float>{1.0f, 2.0f});
     EXPECT_THROW(t2->item(), std::runtime_error);
-    EXPECT_STREQ(t2->to_string().c_str(), "Tensor ( data: [1.000000, 2.000000] )");
 
 } 
 
@@ -104,5 +102,12 @@ TEST(TensorTest, Indexing)
     EXPECT_EQ( ((*(*t2)[1])[1, 1]->item()), 8.0f );
     EXPECT_EQ( ((*(*t2)[0])[1, 1]->item()), 4.0f );
 
+}
+
+TEST (TensorTest, Addition)
+{
     
 }
+
+
+

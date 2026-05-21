@@ -43,5 +43,7 @@ public:
         }
         
         return shape;
-    }
+    } 
+
+    static std::vector<size_t> broadcast(const std::vector<size_t>& shape1, std::vector<size_t> shape2);
 };
