@@ -5,15 +5,13 @@
 
 /*
 must TODO:
-    - broadcasting
     - operations (-,*,/, matmul, etc.)
-    - indexing with :
+    - indexing with : / negative indexing
     - autograd (grad_fn, grad_accumulator, output_nr)
     - flatten method (remove 1 dims)
 
 wanted TODO:
     - print with shape
-    - negative indexing 
 */
 
 
@@ -118,6 +116,8 @@ public:
 
     // -------- Operators --------
     std::shared_ptr<Tensor> operator+ (std::shared_ptr<Tensor> other);
+    std::shared_ptr<Tensor> operator* (std::shared_ptr<Tensor> other);
+
 
     // -------- Getters --------
     const std::shared_ptr<float[]> data() const { return _pdata; }
