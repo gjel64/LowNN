@@ -37,11 +37,13 @@ TEST(VecUtilsTest, Broadcast)
 
     shape1 = {3};
     shape2 = {1, 3};
-    EXPECT_THROW(VecUtils::broadcast(shape1, shape2), std::invalid_argument);
+    expected_shape = {1, 3};
+    EXPECT_EQ(VecUtils::broadcast(shape1, shape2), expected_shape);
 
     shape1 = {3};
     shape2 = {};
-    EXPECT_THROW(VecUtils::broadcast(shape1, shape2), std::invalid_argument);
+    expected_shape = {3};
+    EXPECT_EQ(VecUtils::broadcast(shape1, shape2), expected_shape);
 
     shape1 = {5, 7, 3, 4, 12, 4};
     shape2 = {1, 1, 3, 1, 12, 1};
