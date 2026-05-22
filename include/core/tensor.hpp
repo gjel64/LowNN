@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <iostream>
+#include <cmath>
 #include "core/Math/vecUtils.hpp"
 
 /*
@@ -118,6 +119,8 @@ public:
     std::shared_ptr<Tensor> operator+ (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> operator* (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> operator- (std::shared_ptr<Tensor> other);
+    std::shared_ptr<Tensor> pow (std::shared_ptr<Tensor> other);
+
 
 
     // -------- Getters --------

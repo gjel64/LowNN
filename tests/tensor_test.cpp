@@ -218,3 +218,29 @@ TEST(TensorTest, Subtraction)
     EXPECT_FLOAT_EQ( ((*t10)[1, 1]->item()), -2.0f );
 
 }
+
+TEST(TensorTest, Pow)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{5.0f, 6.0f}, {7.0f, 8.0f}});
+    std::shared_ptr<Tensor> t3 = (*t1).pow(t2);
+    EXPECT_EQ(t3->shape(), (std::vector<std::size_t>{2, 2}));
+    EXPECT_FLOAT_EQ( ((*t3)[0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t3)[1, 1]->item()), 65536.0f );
+    
+    
+    std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(std::vector<float>{7.0f, 8.0f});
+    std::shared_ptr<Tensor> t5 = (*t1).pow(t4);
+    EXPECT_EQ(t5->shape(), (std::vector<std::size_t>{2, 2}));
+    EXPECT_FLOAT_EQ( ((*t5)[0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t5)[0, 1]->item()), 256.0f );
+    EXPECT_FLOAT_EQ( ((*t5)[1, 0]->item()), 2187.0f );
+    EXPECT_FLOAT_EQ( ((*t5)[1, 1]->item()), 65536.0f );
+
+    std::shared_ptr<Tensor> t6 = std::make_shared<Tensor>(10.0f);
+    std::shared_ptr<Tensor> t7 = (*t1).pow(t6);
+    EXPECT_EQ(t7->shape(), (std::vector<std::size_t>{2, 2}));
+    EXPECT_FLOAT_EQ( ((*t7)[0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t7)[1, 1]->item()), 1048576.0f );
+}
+
