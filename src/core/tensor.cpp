@@ -192,6 +192,8 @@ std::shared_ptr<Tensor> Tensor::operator* (std::shared_ptr<Tensor> other){
     return std::make_shared<Tensor>(result_data, result_shape, 0, result_stride);    
 }
 
-
+std::shared_ptr<Tensor> Tensor::operator- (std::shared_ptr<Tensor> other){
+    return (*this) + ((*other) * std::make_shared<Tensor>(-1.0f));
+}
 
 
