@@ -276,3 +276,8 @@ std::shared_ptr<Tensor> Tensor::operator/ (std::shared_ptr<Tensor> other){
     return (*this) * other->pow(std::make_shared<Tensor>(-1.0f));  
 }
 
+std::shared_ptr<Tensor> Tensor::sqrt(){
+    return this->pow(std::make_shared<Tensor>(0.5f));  
+}
+
+

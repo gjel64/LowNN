@@ -269,4 +269,11 @@ TEST(TensorTest, Division)
     EXPECT_FLOAT_EQ( ((*t7)[1, 1]->item()), 0.4f );
 }
 
-
+TEST(TensorTest, Sqrt)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 4.0f}, {9.0f, 16.0f}});
+    std::shared_ptr<Tensor> t2 = t1->sqrt();
+    EXPECT_EQ(t2->shape(), (std::vector<std::size_t>{2, 2}));
+    EXPECT_FLOAT_EQ( ((*t2)[0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t2)[1, 1]->item()), 4.0f );
+}
