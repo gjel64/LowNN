@@ -6,7 +6,7 @@
 /*
 must TODO:
     - broadcasting
-    - operations (+,-,*,/, matmul, etc.)
+    - operations (-,*,/, matmul, etc.)
     - indexing with :
     - autograd (grad_fn, grad_accumulator, output_nr)
     - flatten method (remove 1 dims)
