@@ -120,6 +120,7 @@ public:
     std::shared_ptr<Tensor> operator* (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> operator- (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> pow (std::shared_ptr<Tensor> other);
+    std::shared_ptr<Tensor> operator/ (std::shared_ptr<Tensor> other);
 
 
 
