@@ -48,6 +48,18 @@ void Tensor::print()
     std::cout << to_string() << "\n";
 }
 
+std::shared_ptr<Tensor> Tensor::squeeze() 
+{
+    // remove all 1s dims
+    std::vector<std::size_t> flat_shape;
+    for (std::size_t dim : _shape) {
+        if (dim != 1) {
+            flat_shape.push_back(dim);
+        }
+    }
+    return std::make_shared<Tensor>(_pdata, flat_shape, _offset, _size);
+}
+
 
 
 // ------------------------ Operators ------------------------ 

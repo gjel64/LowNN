@@ -316,4 +316,19 @@ TEST(TensorTest, Matmul)
 
 }
 
+TEST(TensorTest, Squeeze)
+{   
+    std::vector<std::size_t> s1 = {2, 3, 4};
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(Tensor::empty(2, 3, 4));
+    std::shared_ptr<Tensor> t2 = t1->squeeze();
+    EXPECT_EQ(t2->shape(), s1);
+    EXPECT_EQ(t2->size(), 2*3*4);
+
+    std::vector<std::size_t> s2 = {2, 1, 3, 1, 4};
+    std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(Tensor::empty(2, 1, 3, 1, 4));
+    std::shared_ptr<Tensor> t4 = t3->squeeze();
+    EXPECT_EQ(t4->shape(), s1);
+    EXPECT_EQ(t4->size(), 2*1*3*1*4);
+
+}
 

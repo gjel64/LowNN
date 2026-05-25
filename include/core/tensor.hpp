@@ -92,6 +92,7 @@ public:
         std::shared_ptr<float[]> data = std::make_shared<float[]>(size);
         return Tensor(data, shape, 0, size);
     }    
+    std::shared_ptr<Tensor> squeeze();
 
     // -------- Indexing --------
     template <typename... Args> // auto-depth indexing with offset / stride / variadic template
