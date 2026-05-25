@@ -14,6 +14,18 @@ Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, st
     _size = size;
 }
 
+Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::size_t size) 
+    : _pdata(data), _shape(shape), _offset(offset), _size(size) 
+{
+    // calc strides
+    _strides = std::vector<std::size_t>(shape.size(), 1);
+    if (shape.size() > 0) {
+        for (int i = shape.size() - 2; i >= 0; i--) {
+            _strides[i] = shape[i + 1] * _strides[i + 1];
+        }
+    }
+}
+
 
 
 // ------------------------ Methods ------------------------

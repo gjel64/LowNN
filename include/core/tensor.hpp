@@ -71,11 +71,28 @@ public:
         }
     }
     Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::vector<std::size_t> strides); 
+    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::size_t size); 
 
     // -------- Methods --------
     const float item() const;
     const std::string to_string() const;
     void print();
+    template <typename... Args> // auto-depth indexing with offset / stride / variadic template
+    static Tensor empty(Args... indices) {
+        std::vector<int> vec = {indices...};
+        std::vector<std::size_t> shape(vec.begin(), vec.end());
+        std::size_t size = 1;
+        if (shape.empty()) {
+            size = 0;
+        } 
+        else {
+            for (std::size_t s : shape){
+                size *= s;
+            }
+        }
+        std::shared_ptr<float[]> data = std::make_shared<float[]>(size);
+        return Tensor(data, shape, 0, size);
+    }    
 
     // -------- Indexing --------
     template <typename... Args> // auto-depth indexing with offset / stride / variadic template

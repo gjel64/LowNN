@@ -278,6 +278,25 @@ TEST(TensorTest, Sqrt)
     EXPECT_FLOAT_EQ( ((*t2)[1, 1]->item()), 4.0f );
 }
 
+TEST(TensorTest, Empty)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(Tensor::empty(2, 3));
+    EXPECT_EQ(t1->shape(), (std::vector<std::size_t>{2, 3}));
+    EXPECT_EQ(t1->size(), 6);
+
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(Tensor::empty(2, 3, 3, 4));
+    EXPECT_EQ(t2->shape(), (std::vector<std::size_t>{2, 3, 3, 4}));
+    EXPECT_EQ(t2->size(), 2*3*3*4);
+
+    std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(Tensor::empty(1));
+    EXPECT_EQ(t3->shape(), (std::vector<std::size_t>{1}));
+    EXPECT_EQ(t3->size(), 1);
+
+    std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(Tensor::empty());
+    EXPECT_EQ(t4->shape(), (std::vector<std::size_t>{}));
+    EXPECT_EQ(t4->size(), 0);
+}
+
 TEST(TensorTest, Matmul)
 {
     std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{3.14f, 2.2f});
@@ -296,4 +315,5 @@ TEST(TensorTest, Matmul)
     EXPECT_THROW(t4->matmul(t2),std::invalid_argument);
 
 }
+
 
