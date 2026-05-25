@@ -6,10 +6,11 @@
 
 /*
 must TODO:
-    - operations (-,*,/, matmul, etc.)
-    - indexing with : / negative indexing
+    - add matmul
+    - indexing with : and negative indexing
     - autograd (grad_fn, grad_accumulator, output_nr)
-    - flatten method (remove 1 dims)
+    - flatten method (remove 1 dims)é
+    - create tensors with shape
 
 wanted TODO:
     - print with shape
@@ -119,11 +120,10 @@ public:
     std::shared_ptr<Tensor> operator+ (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> operator* (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> operator- (std::shared_ptr<Tensor> other);
-    std::shared_ptr<Tensor> pow (std::shared_ptr<Tensor> other);
-    std::shared_ptr<Tensor> sqrt ();
+    std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> other);
+    std::shared_ptr<Tensor> sqrt();
     std::shared_ptr<Tensor> operator/ (std::shared_ptr<Tensor> other);
-
-
+    std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
 
     // -------- Getters --------
     const std::shared_ptr<float[]> data() const { return _pdata; }

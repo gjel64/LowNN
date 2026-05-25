@@ -276,8 +276,35 @@ std::shared_ptr<Tensor> Tensor::operator/ (std::shared_ptr<Tensor> other){
     return (*this) * other->pow(std::make_shared<Tensor>(-1.0f));  
 }
 
-std::shared_ptr<Tensor> Tensor::sqrt(){
-    return this->pow(std::make_shared<Tensor>(0.5f));  
+std::shared_ptr<Tensor> Tensor::sqrt()
+{
+    return this->pow(std::make_shared<Tensor>(0.5f));
 }
 
+std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
+{
+    // (m?, n), (n,p?) -> (m?, p?)
+    std::size_t this_n = _shape.back();
+    std::size_t other_n = other->shape().at(0);
+    std::size_t other_s_size = other->shape().size();
+    if (other_s_size > 2) {
+        other_n = other->shape().at(other_s_size-2);
+    }
+    if (this_n != other_n) {
+        throw std::invalid_argument("(m?, n), (n,p?) -> (m?, p?) : n needs to be the same");
+    }
 
+    // (m?, n), (n,p?) -> (m?, p?) (broadcast m? and p?)
+    std::vector<std::size_t> m = {};
+    std::vector<std::size_t> p = {};
+    if (_shape.size() > 2) {
+        m = {_shape.begin(), _shape.end() - 2};
+    }
+    if (other_s_size > 2) {
+        p = {_shape.begin() - 2, _shape.end()};
+    }
+    std::vector<std::size_t> final_shape = VecUtils::broadcast(m, p);
+
+    return nullptr;
+    
+}

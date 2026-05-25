@@ -277,3 +277,23 @@ TEST(TensorTest, Sqrt)
     EXPECT_FLOAT_EQ( ((*t2)[0, 0]->item()), 1.0f );
     EXPECT_FLOAT_EQ( ((*t2)[1, 1]->item()), 4.0f );
 }
+
+TEST(TensorTest, Matmul)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{3.14f, 2.2f});
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    }); // 2, 2, 2
+    EXPECT_EQ(t1->matmul(t2), nullptr);
+    EXPECT_EQ(t2->matmul(t1), nullptr);
+
+    std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(std::vector<float>{3.14f, 2.2f, 1.1f});
+    EXPECT_THROW(t1->matmul(t3),std::invalid_argument);
+
+    std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}},{{5.0f, 6.0f}, {7.0f, 8.0f}} 
+    }); // 3, 2, 2
+    EXPECT_THROW(t4->matmul(t2),std::invalid_argument);
+
+}
+
