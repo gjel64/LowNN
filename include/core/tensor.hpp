@@ -9,8 +9,7 @@ must TODO:
     - add matmul
     - indexing with : and negative indexing
     - autograd (grad_fn, grad_accumulator, output_nr)
-    - flatten method (remove 1 dims)é
-    - create tensors with shape
+    - flatten method (remove 1s dims)
 
 wanted TODO:
     - print with shape
