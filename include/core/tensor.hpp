@@ -146,7 +146,7 @@ public:
     const std::shared_ptr<float[]> data() const { return _pdata; }
     const std::vector<std::size_t>& shape() const { return _shape; }
     const std::vector<std::size_t>& strides() const { return _strides; }
-    std::size_t size() const { return _size; }
-    std::size_t offset() const { return _offset; }
+    const std::size_t size() const { return _size; }
+    const std::size_t offset() const { return _offset; }
 
 };

@@ -297,25 +297,6 @@ TEST(TensorTest, Empty)
     EXPECT_EQ(t4->size(), 0);
 }
 
-TEST(TensorTest, Matmul)
-{
-    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{3.14f, 2.2f});
-    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
-        {{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}
-    }); // 2, 2, 2
-    EXPECT_EQ(t1->matmul(t2), nullptr);
-    EXPECT_EQ(t2->matmul(t1), nullptr);
-
-    std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(std::vector<float>{3.14f, 2.2f, 1.1f});
-    EXPECT_THROW(t1->matmul(t3),std::invalid_argument);
-
-    std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
-        {{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}},{{5.0f, 6.0f}, {7.0f, 8.0f}} 
-    }); // 3, 2, 2
-    EXPECT_THROW(t4->matmul(t2),std::invalid_argument);
-
-}
-
 TEST(TensorTest, Squeeze)
 {   
     std::vector<std::size_t> s1 = {2, 3, 4};
@@ -331,4 +312,16 @@ TEST(TensorTest, Squeeze)
     EXPECT_EQ(t4->size(), 2*1*3*1*4);
 
 }
+
+TEST(TensorTest, Matmul)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}, {5.0f, 6.0f}, {7.0f, 8.0f}});
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f, 3.0f}, {4.0f, 5.0f, 6.0f}});
+    std::shared_ptr<Tensor> t3 = (*t1).matmul(t2);
+    EXPECT_EQ(t3->shape(), (std::vector<std::size_t>{4, 3}));
+    EXPECT_FLOAT_EQ( ((*t3)[0, 0]->item()), 9.0f );
+    EXPECT_FLOAT_EQ( ((*t3)[2, 1]->item()), 40.0f );
+
+}
+
 

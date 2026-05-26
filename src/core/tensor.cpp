@@ -314,9 +314,11 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
     if (other_s_size > 2) {
         other_n = other->shape().at(other_s_size-2);
     }
+
     if (this_n != other_n) {
         throw std::invalid_argument("(m?, n), (n,p?) -> (m?, p?) : n needs to be the same");
     }
+    std::size_t n = this_n;
 
     // (m?, n), (n,p?) -> (m?, p?) (broadcast m? and p?)
     std::vector<std::size_t> m = {};
@@ -325,10 +327,42 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
         m = {_shape.begin(), _shape.end() - 2};
     }
     if (other_s_size > 2) {
-        p = {_shape.begin() - 2, _shape.end()};
+        p = {other->shape().begin(), other->shape().end() - 2};
     }
-    std::vector<std::size_t> final_shape = VecUtils::broadcast(m, p);
-
-    return nullptr;
     
+    std::vector<std::size_t> result_shape = VecUtils::broadcast(m, p);
+    if (_shape.size() >= 2) {
+        result_shape.push_back(_shape[_shape.size() - 2]);
+    }
+    if (other->shape().size() >= 2) {
+        result_shape.push_back(other->shape()[other->shape().size() - 1]);
+    }
+
+    // calc size of result
+    std::size_t result_size = 1;
+    for (std::size_t dim_size : result_shape){
+        result_size *= dim_size;
+    }
+
+    std::shared_ptr<float[]> result_data = std::make_shared<float[]>(result_size);
+    // for now only 2D
+    if (_shape.size() != 2 || other_s_size != 2) {throw std::runtime_error("only 2D for now on matmul");} // temporary
+
+    for (std::size_t result_row = 0; result_row < _shape[0]; result_row++)
+    {
+        for (std::size_t other_row = 0; other_row < other->shape()[1]; other_row++) 
+        {
+            for (std::size_t this_col = 0; this_col < _shape[0]; this_col ++) 
+            {
+                std::size_t result_index = result_row * other->shape()[1] + other_row;
+                std::size_t this_index = result_row * _shape[1] + this_col;
+                std::size_t other_index = this_col * other->shape()[1] + other_row;
+                
+                result_data[result_index] +=  _pdata[this_index + _offset] * other->data()[other_index + other->offset()];
+
+            }
+        }
+    }
+
+    return std::make_shared<Tensor>(result_data, result_shape, 0, result_size);
 }
