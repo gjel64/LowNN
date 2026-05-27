@@ -315,13 +315,99 @@ TEST(TensorTest, Squeeze)
 
 TEST(TensorTest, Matmul)
 {
-    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}, {5.0f, 6.0f}, {7.0f, 8.0f}});
-    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f, 3.0f}, {4.0f, 5.0f, 6.0f}});
-    std::shared_ptr<Tensor> t3 = (*t1).matmul(t2);
-    EXPECT_EQ(t3->shape(), (std::vector<std::size_t>{4, 3}));
-    EXPECT_FLOAT_EQ( ((*t3)[0, 0]->item()), 9.0f );
-    EXPECT_FLOAT_EQ( ((*t3)[2, 1]->item()), 40.0f );
+    
+    // 1D x 2D
+    std::shared_ptr<Tensor> t13 = std::make_shared<Tensor>(std::vector<float>{1.0f, 2.0f});
+    std::shared_ptr<Tensor> t14 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f, 3.0f}, {4.0f, 5.0f, 6.0f}});
+    std::shared_ptr<Tensor> t15 = (*t13).matmul(t14);
+    EXPECT_EQ(t15->shape(), (std::vector<std::size_t>{3}));
+    EXPECT_FLOAT_EQ( ((*t15)[0]->item()), 9.0f );
+    EXPECT_FLOAT_EQ( ((*t15)[1]->item()), 12.0f );
+    EXPECT_FLOAT_EQ( ((*t15)[2]->item()), 15.0f );
+    
+    // 3D x 2D
+    std::shared_ptr<Tensor> t22 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}},
+        {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    });
+    std::shared_ptr<Tensor> t23 = std::make_shared<Tensor>(std::vector<std::vector<float>>{
+        {1.0f, 0.0f},
+        {0.0f, 1.0f}
+    });
+    std::shared_ptr<Tensor> t24 = (*t22).matmul(t23);
+    EXPECT_EQ(t24->shape(), (std::vector<std::size_t>{2, 2, 2}));
+    EXPECT_FLOAT_EQ( ((*t24)[0, 0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t24)[0, 0, 1]->item()), 2.0f );
+    EXPECT_FLOAT_EQ( ((*t24)[0, 1, 0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t24)[0, 1, 1]->item()), 4.0f );
+    EXPECT_FLOAT_EQ( ((*t24)[1, 0, 0]->item()), 5.0f );
+    EXPECT_FLOAT_EQ( ((*t24)[1, 0, 1]->item()), 6.0f );
+    EXPECT_FLOAT_EQ( ((*t24)[1, 1, 0]->item()), 7.0f );
+    EXPECT_FLOAT_EQ( ((*t24)[1, 1, 1]->item()), 8.0f );
 
-}
+    // 2D*2D
+    std::shared_ptr<Tensor> t10 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
+    std::shared_ptr<Tensor> t11 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{5.0f, 6.0f}, {7.0f, 8.0f}});
+    std::shared_ptr<Tensor> t12 = (*t10).matmul(t11);
+    EXPECT_FLOAT_EQ( ((*t12)[0, 0]->item()), 19.0f );
+    EXPECT_FLOAT_EQ( ((*t12)[0, 1]->item()), 22.0f );
+    EXPECT_FLOAT_EQ( ((*t12)[1, 0]->item()), 43.0f );
+    EXPECT_FLOAT_EQ( ((*t12)[1, 1]->item()), 50.0f );
 
+    // 2D x 1D
+    std::shared_ptr<Tensor> t16 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f, 3.0f}, {4.0f, 5.0f, 6.0f}});
+    std::shared_ptr<Tensor> t17 = std::make_shared<Tensor>(std::vector<float>{1.0f, 2.0f, 3.0f});
+    std::shared_ptr<Tensor> t18 = (*t16).matmul(t17);
+    EXPECT_EQ(t18->shape(), (std::vector<std::size_t>{2}));
+    EXPECT_FLOAT_EQ( ((*t18)[0]->item()), 14.0f );
+    EXPECT_FLOAT_EQ( ((*t18)[1]->item()), 32.0f );
+
+    // 3D x 3D
+    std::shared_ptr<Tensor> t19 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}},
+        {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    });
+    std::shared_ptr<Tensor> t20 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 0.0f}, {0.0f, 1.0f}},
+        {{0.0f, 1.0f}, {1.0f, 0.0f}}
+    });
+    std::shared_ptr<Tensor> t21 = (*t19).matmul(t20);
+    EXPECT_EQ(t21->shape(), (std::vector<std::size_t>{2, 2, 2}));
+    EXPECT_FLOAT_EQ( ((*t21)[0, 0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t21)[0, 0, 1]->item()), 2.0f );
+    EXPECT_FLOAT_EQ( ((*t21)[0, 1, 0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t21)[0, 1, 1]->item()), 4.0f );
+    EXPECT_FLOAT_EQ( ((*t21)[1, 0, 0]->item()), 6.0f );
+    EXPECT_FLOAT_EQ( ((*t21)[1, 0, 1]->item()), 5.0f );
+    EXPECT_FLOAT_EQ( ((*t21)[1, 1, 0]->item()), 8.0f );
+    EXPECT_FLOAT_EQ( ((*t21)[1, 1, 1]->item()), 7.0f );
+
+    // 4D x 3D
+    std::shared_ptr<Tensor> t25 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<std::vector<float>>>>{
+        {{{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}},
+        {{{9.0f, 10.0f}, {11.0f, 12.0f}}, {{13.0f, 14.0f}, {15.0f, 16.0f}}}
+    });
+    std::shared_ptr<Tensor> t26 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 0.0f}, {0.0f, 1.0f}},
+        {{1.0f, 0.0f}, {0.0f, 1.0f}}
+    });
+    std::shared_ptr<Tensor> t27 = (*t25).matmul(t26);
+    EXPECT_EQ(t27->shape(), (std::vector<std::size_t>{2, 2, 2, 2}));
+    EXPECT_FLOAT_EQ( ((*t27)[0, 0, 0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[0, 0, 0, 1]->item()), 2.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[0, 0, 1, 0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[0, 0, 1, 1]->item()), 4.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[0, 1, 0, 0]->item()), 5.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[0, 1, 0, 1]->item()), 6.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[0, 1, 1, 0]->item()), 7.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[0, 1, 1, 1]->item()), 8.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 0, 0, 0]->item()), 9.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 0, 0, 1]->item()), 10.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 0, 1, 0]->item()), 11.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 0, 1, 1]->item()), 12.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 1, 0, 0]->item()), 13.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 1, 0, 1]->item()), 14.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 1, 1, 0]->item()), 15.0f );
+    EXPECT_FLOAT_EQ( ((*t27)[1, 1, 1, 1]->item()), 16.0f );
+} 
 

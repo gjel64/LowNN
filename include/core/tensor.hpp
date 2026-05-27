@@ -13,6 +13,7 @@ must TODO:
 
 wanted TODO:
     - print with shape
+    - getter that return a struct with Tensor infos
 */
 
 

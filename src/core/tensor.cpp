@@ -307,12 +307,17 @@ std::shared_ptr<Tensor> Tensor::sqrt()
 
 std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
 {
+    const std::vector<std::size_t>& other_shape = other->shape();
+    const std::vector<std::size_t>& other_strides = other->strides();
+    const std::shared_ptr<float[]> other_data = other->data();
+    const std::size_t other_offset = other->offset();
+
     // (m?, n), (n,p?) -> (m?, p?)
     std::size_t this_n = _shape.back();
-    std::size_t other_n = other->shape().at(0);
-    std::size_t other_s_size = other->shape().size();
-    if (other_s_size > 2) {
-        other_n = other->shape().at(other_s_size-2);
+    std::size_t other_n = other_shape.at(0);
+    std::size_t other_s_size = other_shape.size();
+    if (other_s_size >= 2) {
+        other_n = other_shape.at(other_s_size-2);
     }
 
     if (this_n != other_n) {
@@ -327,15 +332,16 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
         m = {_shape.begin(), _shape.end() - 2};
     }
     if (other_s_size > 2) {
-        p = {other->shape().begin(), other->shape().end() - 2};
+        p = {other_shape.begin(), other_shape.end() - 2};
     }
-    
-    std::vector<std::size_t> result_shape = VecUtils::broadcast(m, p);
+
+    std::vector<std::size_t> batch_shape = VecUtils::broadcast(m, p);
+    std::vector<std::size_t> result_shape = batch_shape;
     if (_shape.size() >= 2) {
         result_shape.push_back(_shape[_shape.size() - 2]);
     }
-    if (other->shape().size() >= 2) {
-        result_shape.push_back(other->shape()[other->shape().size() - 1]);
+    if (other_shape.size() >= 2) {
+        result_shape.push_back(other_shape[other_shape.size() - 1]);
     }
 
     // calc size of result
@@ -345,24 +351,75 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
     }
 
     std::shared_ptr<float[]> result_data = std::make_shared<float[]>(result_size);
-    // for now only 2D
-    if (_shape.size() != 2 || other_s_size != 2) {throw std::runtime_error("only 2D for now on matmul");} // temporary
 
-    for (std::size_t result_row = 0; result_row < _shape[0]; result_row++)
-    {
-        for (std::size_t other_row = 0; other_row < other->shape()[1]; other_row++) 
-        {
-            for (std::size_t this_col = 0; this_col < _shape[0]; this_col ++) 
-            {
-                std::size_t result_index = result_row * other->shape()[1] + other_row;
-                std::size_t this_index = result_row * _shape[1] + this_col;
-                std::size_t other_index = this_col * other->shape()[1] + other_row;
-                
-                result_data[result_index] +=  _pdata[this_index + _offset] * other->data()[other_index + other->offset()];
+    if (result_size > 0) {
+        const std::size_t this_dim = _shape.size();
+        const std::size_t other_dim = other_shape.size();
 
+        const std::size_t a_k_stride = _strides[this_dim - 1];
+        const std::size_t b_k_stride = other_dim >= 2 ? other_strides[other_dim - 2] : other_strides[0];
+        const std::size_t a_row_stride = this_dim >= 2 ? _strides[this_dim - 2] : 0;
+        const std::size_t b_col_stride = other_dim >= 2 ? other_strides[other_dim - 1] : 0;
+
+        std::vector<std::size_t> this_batch_strides(batch_shape.size(), 0);
+        std::vector<std::size_t> other_batch_strides(batch_shape.size(), 0);
+
+        std::size_t this_batch_diff = batch_shape.size() - m.size();
+        std::size_t other_batch_diff = batch_shape.size() - p.size();
+
+        for (std::size_t dim = 0; dim < batch_shape.size(); dim++) {
+            if (dim >= this_batch_diff) {
+                std::size_t this_batch_dim = dim - this_batch_diff;
+                if (m[this_batch_dim] != 1) {
+                    this_batch_strides[dim] = _strides[this_batch_dim];
+                }
+            }
+            if (dim >= other_batch_diff) {
+                std::size_t other_batch_dim = dim - other_batch_diff;
+                if (p[other_batch_dim] != 1) {
+                    other_batch_strides[dim] = other_strides[other_batch_dim];
+                }
+            }
+        }
+
+        std::vector<std::size_t> result_indices(result_shape.size(), 0);
+        const std::size_t batch_ndim = batch_shape.size();
+
+        for (std::size_t out_i = 0; out_i < result_size; out_i++) {
+            std::size_t this_base = _offset;
+            std::size_t other_base = other_offset;
+
+            for (std::size_t dim = 0; dim < batch_ndim; dim++) {
+                this_base += result_indices[dim] * this_batch_strides[dim];
+                other_base += result_indices[dim] * other_batch_strides[dim];
+            }
+
+            if (this_dim >= 2) {
+                this_base += result_indices[batch_ndim] * a_row_stride;
+            }
+            if (other_dim >= 2) {
+                std::size_t col_index_pos = batch_ndim + (this_dim >= 2 ? 1 : 0);
+                other_base += result_indices[col_index_pos] * b_col_stride;
+            }
+
+            float sum = 0.0f;
+            for (std::size_t k = 0; k < n; k++) {
+                sum += _pdata[this_base + k * a_k_stride] * other_data[other_base + k * b_k_stride];
+            }
+            result_data[out_i] = sum;
+
+            if (!result_shape.empty()) {
+                for (int dim = static_cast<int>(result_shape.size()) - 1; dim >= 0; dim--) {
+                    result_indices[dim]++;
+                    if (result_indices[dim] < result_shape[dim]) {
+                        break;
+                    }
+                    result_indices[dim] = 0;
+                }
             }
         }
     }
+
 
     return std::make_shared<Tensor>(result_data, result_shape, 0, result_size);
 }
