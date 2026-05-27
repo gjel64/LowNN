@@ -2,11 +2,11 @@
 #include <memory>
 #include <iostream>
 #include <cmath>
+#include "core/grad_fn.hpp"
 #include "core/Math/vecUtils.hpp"
 
 /*
 must TODO:
-    - add matmul
     - indexing with : and negative indexing
     - autograd (grad_fn, grad_accumulator, output_nr)
     - flatten method (remove 1s dims)
@@ -25,13 +25,18 @@ private:
     std::vector<std::size_t> _shape;
     std::vector<std::size_t> _strides;
     std::size_t _size;
-    std::size_t _offset = 0; // slicing offset
+    std::size_t _offset = 0;
+    std::shared_ptr<float[]> _grad;
+    bool _require_grad;
+    GradFn* _grad_fn;
+    std::vector<std::shared_ptr<Tensor>> _parents;
+
     
 
 public:
     // -------- Init --------
     template<typename V>
-    Tensor(V data) : _offset(0){
+    Tensor(V data, bool require_grad = false) : _offset(0), _require_grad(require_grad), _grad_fn(nullptr){
         if constexpr (std::is_floating_point_v<V>) 
         {
             _pdata = std::make_shared<float[]>(1);
@@ -69,9 +74,12 @@ public:
         if (_size != tot_shape_size) {
             throw std::invalid_argument("Fail at init : Data need a regular shape");
         }
+        if (_require_grad) {
+            _grad = std::make_shared<float[]>(_size);
+        }
     }
-    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::vector<std::size_t> strides); 
-    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::size_t size); 
+    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::vector<std::size_t> strides, bool require_grad = false, std::vector<std::shared_ptr<Tensor>> parents = {});
+    Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::size_t size, bool require_grad = false, std::vector<std::shared_ptr<Tensor>> parents = {}); 
 
     // -------- Methods --------
     const float item() const;
@@ -94,6 +102,7 @@ public:
         return Tensor(data, shape, 0, size);
     }    
     std::shared_ptr<Tensor> squeeze();
+    void backward();
 
     // -------- Indexing --------
     template <typename... Args> // auto-depth indexing with offset / stride / variadic template
@@ -149,5 +158,12 @@ public:
     const std::vector<std::size_t>& strides() const { return _strides; }
     const std::size_t size() const { return _size; }
     const std::size_t offset() const { return _offset; }
+    const bool require_grad() const { return _require_grad; }
+    const std::vector<std::shared_ptr<Tensor>>& parents() const { return _parents; }
+    const std::shared_ptr<float[]> grad() const { return _grad; }
+
+    // -------- Setters --------
+    void set_grad_fn(GradFn* grad_fn) { _grad_fn = grad_fn; }
+    void set_require_grad(bool require_grad) { _require_grad = require_grad; if (_require_grad && !_grad) { _grad = std::make_shared<float[]>(_size); } }
 
 };

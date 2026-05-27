@@ -4,18 +4,26 @@
 
 // ------------------------ Init ------------------------
 
-Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::vector<std::size_t> strides) 
-    : _pdata(data), _shape(shape), _offset(offset), _strides(strides) 
+Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, 
+    std::size_t offset, std::vector<std::size_t> strides, 
+    bool require_grad, std::vector<std::shared_ptr<Tensor>> parents) 
+    : _pdata(data), _shape(shape), _offset(offset), _strides(strides), _require_grad(require_grad), _grad_fn(nullptr), _grad(nullptr), _parents(parents)
 {
     std::size_t size = 1;
     for (std::size_t s : shape){
         size *= s;
     }
     _size = size;
+
+    if (_require_grad) {
+        _grad = std::make_shared<float[]>(size);
+    }
 }
 
-Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::size_t size) 
-    : _pdata(data), _shape(shape), _offset(offset), _size(size) 
+Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, 
+    std::size_t offset, std::size_t size, bool require_grad, 
+    std::vector<std::shared_ptr<Tensor>> parents) 
+    : _pdata(data), _shape(shape), _offset(offset), _size(size), _require_grad(require_grad), _grad_fn(nullptr), _grad(nullptr), _parents(parents)
 {
     // calc strides
     _strides = std::vector<std::size_t>(shape.size(), 1);
@@ -24,6 +32,10 @@ Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, st
             _strides[i] = shape[i + 1] * _strides[i + 1];
         }
     }
+    if (_require_grad) {
+        _grad = std::make_shared<float[]>(size);
+    }
+
 }
 
 
@@ -60,6 +72,15 @@ std::shared_ptr<Tensor> Tensor::squeeze()
     return std::make_shared<Tensor>(_pdata, flat_shape, _offset, _size);
 }
 
+void Tensor::backward() 
+{
+    if (!_require_grad) {
+        throw std::runtime_error("Cannot call backward on a tensor that does not require grad");
+    }
+    if (_grad_fn) {
+       _grad_fn->operator()(*this);
+    }
+}
 
 
 // ------------------------ Operators ------------------------ 
@@ -423,3 +444,6 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
 
     return std::make_shared<Tensor>(result_data, result_shape, 0, result_size);
 }
+
+
+
