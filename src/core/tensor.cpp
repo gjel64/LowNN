@@ -7,7 +7,7 @@
 Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, 
     std::size_t offset, std::vector<std::size_t> strides, 
     bool require_grad, std::vector<std::shared_ptr<Tensor>> parents) 
-    : _pdata(data), _shape(shape), _offset(offset), _strides(strides), _require_grad(require_grad), _grad_fn(nullptr), _grad(nullptr), _parents(parents)
+    : _pdata(data), _shape(shape), _offset(offset), _strides(strides), _require_grad(require_grad), _pgrad(nullptr), _parents(parents)
 {
     std::size_t size = 1;
     for (std::size_t s : shape){
@@ -16,14 +16,15 @@ Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape,
     _size = size;
 
     if (_require_grad) {
-        _grad = std::make_shared<float[]>(size);
+        _pgrad = std::make_shared<float[]>(size);
+        for (std::size_t i = 0; i < _size; ++i) _pgrad.get()[i] = 0.0f;
     }
 }
 
 Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, 
     std::size_t offset, std::size_t size, bool require_grad, 
     std::vector<std::shared_ptr<Tensor>> parents) 
-    : _pdata(data), _shape(shape), _offset(offset), _size(size), _require_grad(require_grad), _grad_fn(nullptr), _grad(nullptr), _parents(parents)
+    : _pdata(data), _shape(shape), _offset(offset), _size(size), _require_grad(require_grad), _pgrad(nullptr), _parents(parents)
 {
     // calc strides
     _strides = std::vector<std::size_t>(shape.size(), 1);
@@ -33,7 +34,8 @@ Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape,
         }
     }
     if (_require_grad) {
-        _grad = std::make_shared<float[]>(size);
+        _pgrad = std::make_shared<float[]>(size);
+        for (std::size_t i = 0; i < _size; ++i) _pgrad.get()[i] = 0.0f;
     }
 
 }
@@ -72,14 +74,31 @@ std::shared_ptr<Tensor> Tensor::squeeze()
     return std::make_shared<Tensor>(_pdata, flat_shape, _offset, _size);
 }
 
-void Tensor::backward() 
+void Tensor::ensure_grad_allocated() {
+    // if tensor as no grad it creates one and init at 0
+    if (!_pgrad) {
+        _pgrad = std::make_shared<float[]>(_size);
+        // zero init
+        for (std::size_t i = 0; i < _size; ++i) _pgrad.get()[i] = 0.0f;
+    }
+}
+
+void Tensor::accumulate_grad_from_tensor(const std::shared_ptr<Tensor>& src) {
+    if (!src) return;
+    if (src->size() != this->size()) {
+        throw std::runtime_error("accumulate_grad_from_tensor: size mismatch");
+    }
+    ensure_grad_allocated();
+    auto src_data = src->data();
+    for (std::size_t i = 0; i < _size; ++i) {
+        _pgrad.get()[i] += src_data.get()[i + src->offset()];
+    }
+    int a = 2;
+}
+
+void Tensor::backward(std::shared_ptr<Tensor> grad_tensor) 
 {
-    if (!_require_grad) {
-        throw std::runtime_error("Cannot call backward on a tensor that does not require grad");
-    }
-    if (_grad_fn) {
-       _grad_fn->operator()(*this);
-    }
+    Engine::backward(shared_from_this(), grad_tensor);
 }
 
 
@@ -157,8 +176,17 @@ std::shared_ptr<Tensor> Tensor::operator+ (std::shared_ptr<Tensor> other){
             }
         }
     }
+    
+    // TODO: add with no_grad
 
-    return std::make_shared<Tensor>(result_data, result_shape, 0, result_stride);    
+    std::vector<std::shared_ptr<Tensor>> parents = {std::shared_ptr<Tensor>(shared_from_this()), other};
+    bool req_grad = this->require_grad() || other->require_grad();
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, result_shape, 0, result_stride, req_grad, parents);
+
+    std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this(), other };
+    auto grad_fn = std::make_shared<AddGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    result->set_grad_fn(grad_fn);
+    return result;
 }
 
 std::shared_ptr<Tensor> Tensor::operator* (std::shared_ptr<Tensor> other){

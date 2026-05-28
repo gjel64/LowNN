@@ -4,20 +4,24 @@
 #include <cmath>
 #include "core/grad_fn.hpp"
 #include "core/Math/vecUtils.hpp"
+#include "core/GradFn/add_grad_fn.hpp"
+#include "core/engine.hpp"
 
-/*
-must TODO:
+/* must TODO:
     - indexing with : and negative indexing
     - autograd (grad_fn, grad_accumulator, output_nr)
     - flatten method (remove 1s dims)
+    - add "with no_grad"
+    - create tensor full of a value with shape
 
 wanted TODO:
     - print with shape
     - getter that return a struct with Tensor infos
+    - internal iterator over the real data (to avoid strides / offset code duplication)
 */
 
 
-class Tensor {
+class Tensor: public std::enable_shared_from_this<Tensor> {
 private:
 
     // -------- Attributes --------
@@ -26,17 +30,20 @@ private:
     std::vector<std::size_t> _strides;
     std::size_t _size;
     std::size_t _offset = 0;
-    std::shared_ptr<float[]> _grad;
+    std::shared_ptr<float[]> _pgrad;
     bool _require_grad;
-    GradFn* _grad_fn;
+    std::shared_ptr<GradFn> _grad_fn;
     std::vector<std::shared_ptr<Tensor>> _parents;
 
-    
+    // -------- Private methods --------
+    void _set_grad_fn(std::shared_ptr<GradFn> grad_fn) { _grad_fn = grad_fn; }
+
+
 
 public:
     // -------- Init --------
     template<typename V>
-    Tensor(V data, bool require_grad = false) : _offset(0), _require_grad(require_grad), _grad_fn(nullptr){
+    Tensor(V data, bool require_grad = false) : _offset(0), _require_grad(require_grad){
         if constexpr (std::is_floating_point_v<V>) 
         {
             _pdata = std::make_shared<float[]>(1);
@@ -75,7 +82,7 @@ public:
             throw std::invalid_argument("Fail at init : Data need a regular shape");
         }
         if (_require_grad) {
-            _grad = std::make_shared<float[]>(_size);
+            _pgrad = std::make_shared<float[]>(_size);
         }
     }
     Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::vector<std::size_t> strides, bool require_grad = false, std::vector<std::shared_ptr<Tensor>> parents = {});
@@ -102,7 +109,7 @@ public:
         return Tensor(data, shape, 0, size);
     }    
     std::shared_ptr<Tensor> squeeze();
-    void backward();
+    void backward(std::shared_ptr<Tensor> grad = nullptr);
 
     // -------- Indexing --------
     template <typename... Args> // auto-depth indexing with offset / stride / variadic template
@@ -159,11 +166,15 @@ public:
     const std::size_t size() const { return _size; }
     const std::size_t offset() const { return _offset; }
     const bool require_grad() const { return _require_grad; }
-    const std::vector<std::shared_ptr<Tensor>>& parents() const { return _parents; }
-    const std::shared_ptr<float[]> grad() const { return _grad; }
+    std::vector<std::shared_ptr<Tensor>> parents() { return _parents; }
+    std::shared_ptr<float[]> gradp() { return _pgrad; }
+    std::shared_ptr<GradFn> grad_fn() { return _grad_fn; }
+
+    void ensure_grad_allocated();
+    void accumulate_grad_from_tensor(const std::shared_ptr<Tensor>& src);
+    void set_grad_fn(std::shared_ptr<GradFn> grad_fn) { _grad_fn = grad_fn; }
 
     // -------- Setters --------
-    void set_grad_fn(GradFn* grad_fn) { _grad_fn = grad_fn; }
-    void set_require_grad(bool require_grad) { _require_grad = require_grad; if (_require_grad && !_grad) { _grad = std::make_shared<float[]>(_size); } }
+    void set_require_grad(bool require_grad) { _require_grad = require_grad; if (_require_grad && !_pgrad) { _pgrad = std::make_shared<float[]>(_size); } }
 
 };

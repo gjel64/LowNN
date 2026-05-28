@@ -1,0 +1,12 @@
+#pragma once
+#include "core/grad_fn.hpp"
+
+class AddGradFn : public GradFn {
+public:
+    AddGradFn(std::vector<std::weak_ptr<Tensor>> inputs, std::weak_ptr<Tensor> output);
+    
+    std::vector<std::shared_ptr<Tensor>> backward(
+        const std::shared_ptr<Tensor>& out,
+        const std::shared_ptr<Tensor>& out_grad
+    ) override;
+};

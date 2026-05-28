@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "core/tensor.hpp"
+#include <algorithm>
 #include <iostream>
 #include <memory>
 
@@ -410,4 +411,22 @@ TEST(TensorTest, Matmul)
     EXPECT_FLOAT_EQ( ((*t27)[1, 1, 1, 0]->item()), 15.0f );
     EXPECT_FLOAT_EQ( ((*t27)[1, 1, 1, 1]->item()), 16.0f );
 } 
+
+TEST(TensorTest, BackpropAdd)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(2.0f, true);
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(3.0f, true);
+    std::shared_ptr<Tensor> t3 = (*t1) + t2;
+    t3->backward();
+
+    EXPECT_FLOAT_EQ( t1->gradp().get()[0], 1.0f );
+    EXPECT_FLOAT_EQ( t2->gradp().get()[0], 1.0f );
+
+    std::shared_ptr<Tensor> grad_output = std::make_shared<Tensor>(5.0f);
+    t3->backward(grad_output);
+    EXPECT_FLOAT_EQ( t1->gradp().get()[0], 6.0f );
+    EXPECT_FLOAT_EQ( t2->gradp().get()[0], 6.0f );
+    
+}
+
 
