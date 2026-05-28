@@ -6,12 +6,13 @@ void Engine::backward(std::shared_ptr<Tensor> root, std::shared_ptr<Tensor> grad
     if (!root) return;
 
     std::shared_ptr<float[]> root_grad_data = std::make_shared<float[]>(root->size());
+
     // initialize root grad
     if (grad_override) {
         if (grad_override->size() != root->size()) {
             throw std::runtime_error("Engine::backward: size mismatch between grad_override and root");
         }
-        // overwrite the root's grad (accumulate at the end) 
+        // overwrite the root's grad (accumulate at the end) (because this is the loss that backprop on the graph and not the roots tensors grad)
         for (std::size_t i = 0; i < root->size(); ++i) {
             root_grad_data.get()[i] = root->gradp().get()[i];
             root->gradp().get()[i] = grad_override->data().get()[i + grad_override->offset()];
