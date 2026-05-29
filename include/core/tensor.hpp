@@ -15,8 +15,6 @@
     - create tensor full of a value with shape
 
 wanted TODO:
-    - print with shape
-    - getter that return a struct with Tensor infos
     - internal iterator over the real data (to avoid strides / offset code duplication)
 */
 
@@ -90,8 +88,13 @@ public:
     // -------- Methods --------
     const float item() const;
     const std::string to_string() const;
-    void print();
-    template <typename... Args> // auto-depth indexing with offset / stride / variadic template
+    void print();   
+    std::shared_ptr<Tensor> squeeze();
+    void backward(std::shared_ptr<Tensor> grad = nullptr);
+    void ensure_grad_allocated();
+
+    // ------- static Methods --------
+    template <typename... Args>
     static Tensor empty(Args... indices) {
         std::vector<int> vec = {indices...};
         std::vector<std::size_t> shape(vec.begin(), vec.end());
@@ -106,10 +109,9 @@ public:
         }
         std::shared_ptr<float[]> data = std::make_shared<float[]>(size);
         return Tensor(data, shape, 0, size);
-    }    
-    std::shared_ptr<Tensor> squeeze();
-    void backward(std::shared_ptr<Tensor> grad = nullptr);
-    void ensure_grad_allocated();
+    } 
+    static Tensor fill(float value, const std::vector<std::size_t>& shape);
+    
 
     // -------- Indexing --------
     template <typename... Args> // auto-depth indexing with offset / stride / variadic template

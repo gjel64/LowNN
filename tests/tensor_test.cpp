@@ -56,6 +56,13 @@ TEST(TensorTest, Creation)
     EXPECT_EQ(t7->strides(), (std::vector<std::size_t>{2, 1}));
     EXPECT_EQ(t7->size(), 4);
 
+    std::shared_ptr<Tensor> t8 = std::make_shared<Tensor>( Tensor::fill(1.0f, {2, 3, 4}) );
+    EXPECT_EQ(t8->shape(), (std::vector<std::size_t>{2, 3, 4}));
+    EXPECT_EQ(t8->size(), 24);
+    for (std::size_t i = 0; i < t8->size(); i++) {
+        EXPECT_FLOAT_EQ(t8->data().get()[i], 1.0f);
+    }
+
 } 
 
 TEST(TensorTest, Indexing)

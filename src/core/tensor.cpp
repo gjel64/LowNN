@@ -105,6 +105,21 @@ void Tensor::print()
 }
 
 
+
+// ------------------------ Static Methods ------------------------ 
+
+Tensor Tensor::fill(float value, const std::vector<std::size_t>& shape) {
+    std::size_t size = 1;
+    for (std::size_t s : shape){
+        size *= s;
+    }
+    std::shared_ptr<float[]> data = std::make_shared<float[]>(size);
+    for (std::size_t i = 0; i < size; ++i) {
+        data[i] = value;
+    }
+    return Tensor(data, shape, 0, size);
+}
+
 // ------------------------ Operators ------------------------ 
 
 std::shared_ptr<Tensor> Tensor::operator+ (std::shared_ptr<Tensor> other){
