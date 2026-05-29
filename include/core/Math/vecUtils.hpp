@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include <typeinfo>
 
 
@@ -14,6 +15,11 @@ template<typename T, size_t N>
 struct is_c_array<T[N]> : std::true_type {}; // taille connue
 template<typename T>
 struct is_c_array<T[]> : std::true_type {};  // taille inconnue
+
+struct array {
+    std::shared_ptr<float[]> data;
+    std::size_t size;
+};
 
 class VecUtils {
 public:

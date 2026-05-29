@@ -59,11 +59,10 @@ void Engine::backward(std::shared_ptr<Tensor> root, std::shared_ptr<Tensor> grad
             throw std::runtime_error("Engine::backward: missing out grad");
         }
 
-        auto input_grads = fn->backward(out, out_grad);
+        std::vector<array> input_grads = fn->backward(out, out_grad);
         for (std::size_t i = 0; i < fn->inputs.size(); ++i) {
             if (auto in = fn->inputs[i].lock()) {
-                if (!input_grads[i]) continue;
-                in->accumulate_grad_from_tensor(input_grads[i]);
+                in->accumulate_grad_from_array(input_grads[i]);
             }
         }
     }

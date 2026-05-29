@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_set>
 #include <functional>
+#include "core/Math/vecUtils.hpp"
 
 class Tensor;
 

@@ -172,6 +172,7 @@ public:
 
     void ensure_grad_allocated();
     void accumulate_grad_from_tensor(const std::shared_ptr<Tensor>& src);
+    void accumulate_grad_from_array(const array src);
     void set_grad_fn(std::shared_ptr<GradFn> grad_fn) { _grad_fn = grad_fn; }
 
     // -------- Setters --------
