@@ -453,6 +453,20 @@ TEST(TensorTest, BackpropAdd)
         EXPECT_FLOAT_EQ( t7->gradp().get()[i], 1.0f );
         EXPECT_FLOAT_EQ( t8->gradp().get()[i], 1.0f );
     }
+
+    /*
+    // Test broadcasting
+    std::shared_ptr<Tensor> t10 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}}, true);
+    std::shared_ptr<Tensor> t11 = std::make_shared<Tensor>(std::vector<float>{5.0f, 6.0f}, true);
+    std::shared_ptr<Tensor> t12 = (*t10) + t11;
+    t12->backward(std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 1.0f}, {1.0f, 1.0f}}));
+    EXPECT_FLOAT_EQ( t10->gradp().get()[0], 1.0f );
+    EXPECT_FLOAT_EQ( t10->gradp().get()[1], 1.0f );
+    EXPECT_FLOAT_EQ( t10->gradp().get()[2], 1.0f );
+    EXPECT_FLOAT_EQ( t10->gradp().get()[3], 1.0f );
+    EXPECT_FLOAT_EQ( t11->gradp().get()[0], 2.0f );
+    EXPECT_FLOAT_EQ( t11->gradp().get()[1], 2.0f );
+    */
 }
 
 
