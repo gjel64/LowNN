@@ -20,6 +20,10 @@ wanted TODO:
     - internal iterator over the real data (to avoid strides / offset code duplication)
 */
 
+/*
+now TODO:
+    - get rid of accumulate but accumulate directly in the gradfn
+*/
 
 class Tensor: public std::enable_shared_from_this<Tensor> {
 private:

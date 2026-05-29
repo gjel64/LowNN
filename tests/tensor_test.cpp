@@ -428,11 +428,11 @@ TEST(TensorTest, BackpropAdd)
     EXPECT_FLOAT_EQ( t2->gradp().get()[0], 6.0f );
     
 
+    // 2D + 2D
     std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}}, true);
     std::shared_ptr<Tensor> t5 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{5.0f, 6.0f}, {7.0f, 8.0f}}, true);
     std::shared_ptr<Tensor> t6 = (*t4) + t5;
     t6->backward(std::make_shared<Tensor>(std::vector<std::vector<float>>{{2.0f, 2.0f}, {3.0f, 3.0f}}));
-
     EXPECT_FLOAT_EQ( t4->gradp().get()[0], 2.0f );
     EXPECT_FLOAT_EQ( t4->gradp().get()[1], 2.0f );
     EXPECT_FLOAT_EQ( t4->gradp().get()[2], 3.0f );
@@ -454,7 +454,7 @@ TEST(TensorTest, BackpropAdd)
         EXPECT_FLOAT_EQ( t8->gradp().get()[i], 1.0f );
     }
 
-    /*
+
     // Test broadcasting
     std::shared_ptr<Tensor> t10 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}}, true);
     std::shared_ptr<Tensor> t11 = std::make_shared<Tensor>(std::vector<float>{5.0f, 6.0f}, true);
@@ -466,7 +466,22 @@ TEST(TensorTest, BackpropAdd)
     EXPECT_FLOAT_EQ( t10->gradp().get()[3], 1.0f );
     EXPECT_FLOAT_EQ( t11->gradp().get()[0], 2.0f );
     EXPECT_FLOAT_EQ( t11->gradp().get()[1], 2.0f );
-    */
+
+    // (3, 1, 2) + (2, 2) -> (3, 2, 2)
+    std::shared_ptr<Tensor> t13 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{{{1.0f, 2.0f}}, {{3.0f, 4.0f}}, {{5.0f, 6.0f}}}, true);
+    std::shared_ptr<Tensor> t14 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{7.0f, 8.0f}, {9.0f, 10.0f}}, true);
+    std::shared_ptr<Tensor> t15 = (*t13) + t14;
+    t15->backward(std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{{{1.0f, 1.0f}, {1.0f, 1.0f}}, {{1.0f, 1.0f}, {1.0f, 1.0f}}, {{1.0f, 1.0f}, {1.0f, 1.0f}}}));
+    for (std::size_t i = 0; i < t15->size(); i++) {
+        EXPECT_FLOAT_EQ( t15->gradp().get()[i], 1.0f );
+    }
+    for (std::size_t i = 0; i < t13->size(); i++) {
+        EXPECT_FLOAT_EQ( t13->gradp().get()[i], 2.0f );
+    }
+    for (std::size_t i = 0; i < t14->size(); i++) {
+        EXPECT_FLOAT_EQ( t14->gradp().get()[i], 3.0f );
+    }
+    
 }
 
 

@@ -16,8 +16,15 @@ std::vector<array> AddGradFn::backward(
         throw std::runtime_error("AddGradFn: input tensors no longer exist");
     }
     if (VecUtils::broadcast(b->shape(), a->shape()) != out->shape()) {
-        throw std::runtime_error("AddGradFn: shapes are not compatible for broadcasting (a/b vs out)");
+        throw std::runtime_error("AddGradFn: shapes are not compatible for broadcasting (a/b vs out) -> not usual error");
+    }
+    std::shared_ptr<float[]> a_grad_data = std::make_shared<float[]>(a->size());
+    std::shared_ptr<float[]> b_grad_data = std::make_shared<float[]>(b->size());
+    for (std::size_t i = 0; i < out->size(); ++i) {
+        a_grad_data.get()[i % a->size()] += out_grad->data().get()[i + out_grad->offset()];
+        b_grad_data.get()[i % b->size()] += out_grad->data().get()[i + out_grad->offset()];
     }
 
-    return {array{out_grad->data(), a->size()}, array{out_grad->data(),  b->size()}};
+
+    return {array{a_grad_data, a->size()}, array{b_grad_data,  b->size()}};
 }
