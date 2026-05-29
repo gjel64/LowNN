@@ -57,11 +57,6 @@ const std::string Tensor::to_string() const
     return "to_string not implemented yet";
 }
 
-void Tensor::print() 
-{
-    std::cout << to_string() << "\n";
-}
-
 std::shared_ptr<Tensor> Tensor::squeeze() 
 {
     // remove all 1s dims
@@ -86,6 +81,27 @@ void Tensor::ensure_grad_allocated() {
 void Tensor::backward(std::shared_ptr<Tensor> grad_tensor) 
 {
     Engine::backward(shared_from_this(), grad_tensor);
+}
+
+void Tensor::print() 
+{
+    std::size_t count = 0;
+    
+    std::function<void(std::size_t)> print_recursive = [&](std::size_t dim) {
+        if (dim == _shape.size()) {
+            std::cout << _pdata[_offset + count] << ", ";
+            count++;
+            return;
+        }
+        std::cout << "[";
+        for (std::size_t i = 0; i < _shape[dim]; i++) {
+            print_recursive(dim + 1);
+        }
+        std::cout << "]";
+    };
+    print_recursive(0);
+    std::cout << "\n";
+
 }
 
 
@@ -172,7 +188,7 @@ std::shared_ptr<Tensor> Tensor::operator+ (std::shared_ptr<Tensor> other){
 
     std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this(), other };
     auto grad_fn = std::make_shared<AddGradFn>(inputs, std::weak_ptr<Tensor>(result));
-    result->set_grad_fn(grad_fn);
+    result->_set_grad_fn(grad_fn);
     return result;
 }
 

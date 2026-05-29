@@ -56,20 +56,18 @@ TEST(TensorTest, Creation)
     EXPECT_EQ(t7->strides(), (std::vector<std::size_t>{2, 1}));
     EXPECT_EQ(t7->size(), 4);
 
-}
-
-TEST(TensorTest, BasicMethods)
-{
-    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{3.14f});
-    EXPECT_FLOAT_EQ(t1->item(), 3.14f);
-
-    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<float>{1.0f, 2.0f});
-    EXPECT_THROW(t2->item(), std::runtime_error);
-
 } 
 
 TEST(TensorTest, Indexing)
 {
+
+    std::shared_ptr<Tensor> t = std::make_shared<Tensor>(std::vector<float>{3.14f});
+    EXPECT_FLOAT_EQ(t->item(), 3.14f);
+
+    std::shared_ptr<Tensor> tt = std::make_shared<Tensor>(std::vector<float>{1.0f, 2.0f});
+    EXPECT_THROW(tt->item(), std::runtime_error);
+
+
     std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
     EXPECT_FLOAT_EQ( ((*t1)[0, 0])->item(), 1.0f );
     EXPECT_FLOAT_EQ( ((*t1)[1, 0])->item(), 3.0f );

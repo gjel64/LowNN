@@ -20,11 +20,6 @@ wanted TODO:
     - internal iterator over the real data (to avoid strides / offset code duplication)
 */
 
-/*
-now TODO:
-    - get rid of accumulate but accumulate directly in the gradfn
-*/
-
 class Tensor: public std::enable_shared_from_this<Tensor> {
 private:
 
@@ -114,6 +109,7 @@ public:
     }    
     std::shared_ptr<Tensor> squeeze();
     void backward(std::shared_ptr<Tensor> grad = nullptr);
+    void ensure_grad_allocated();
 
     // -------- Indexing --------
     template <typename... Args> // auto-depth indexing with offset / stride / variadic template
@@ -173,9 +169,6 @@ public:
     std::vector<std::shared_ptr<Tensor>> parents() { return _parents; }
     std::shared_ptr<float[]> gradp() { return _pgrad; }
     std::shared_ptr<GradFn> grad_fn() { return _grad_fn; }
-
-    void ensure_grad_allocated();
-    void set_grad_fn(std::shared_ptr<GradFn> grad_fn) { _grad_fn = grad_fn; }
 
     // -------- Setters --------
     void set_require_grad(bool require_grad) { _require_grad = require_grad; if (_require_grad && !_pgrad) { _pgrad = std::make_shared<float[]>(_size); } }

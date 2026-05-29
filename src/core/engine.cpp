@@ -56,7 +56,7 @@ void Engine::backward(std::shared_ptr<Tensor> root, std::shared_ptr<Tensor> grad
         if (out->gradp()) {
             out_grad = std::make_shared<Tensor>(out->gradp(), out->shape(), out->offset(), out->size(), false);
         } else {
-            throw std::runtime_error("Engine::backward: missing out grad");
+            throw std::runtime_error("Engine::backward: missing out's grad");
         }
 
         fn->backward(out, out_grad);
