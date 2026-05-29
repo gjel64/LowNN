@@ -83,32 +83,6 @@ void Tensor::ensure_grad_allocated() {
     }
 }
 
-void Tensor::accumulate_grad_from_tensor(const std::shared_ptr<Tensor>& src) {
-    // not used for now, but could be useful if we want to do some grad manipulation in the future (like grad clipping or something)
-    if (!src) return;
-    if (src->size() != this->size()) {
-        throw std::runtime_error("accumulate_grad_from_tensor: size mismatch");
-    }
-    ensure_grad_allocated();
-    auto src_data = src->data();
-    for (std::size_t i = 0; i < _size; ++i) {
-        _pgrad.get()[i] += src_data.get()[i + src->offset()];
-    }
-    int a = 2;
-}
-
-void Tensor::accumulate_grad_from_array(const array src) {
-    if (src.size != this->size()) {
-        throw std::runtime_error("accumulate_grad_from_array: size mismatch");
-    }
-    ensure_grad_allocated();
-    auto src_data = src.data;
-    for (std::size_t i = 0; i < _size; ++i) {
-        _pgrad.get()[i] += src_data.get()[i];
-    }
-    int a = 2;
-}
-
 void Tensor::backward(std::shared_ptr<Tensor> grad_tensor) 
 {
     Engine::backward(shared_from_this(), grad_tensor);
