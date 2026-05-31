@@ -21,7 +21,7 @@ void Engine::backward(std::shared_ptr<Tensor> root, std::shared_ptr<Tensor> grad
     else {
         if (root->size() == 1) {
             root->ensure_grad_allocated();
-            root->gradp().get()[root->offset()] += 1.0f;
+            root->gradp().get()[0] += 1.0f;
         } 
         else {
             throw std::invalid_argument("Engine::backward: grad_override parameter must be provided for non-scalar root");
@@ -54,7 +54,7 @@ void Engine::backward(std::shared_ptr<Tensor> root, std::shared_ptr<Tensor> grad
 
         std::shared_ptr<Tensor> out_grad = nullptr;
         if (out->gradp()) {
-            out_grad = std::make_shared<Tensor>(out->gradp(), out->shape(), out->offset(), out->size(), false);
+            out_grad = std::make_shared<Tensor>(out->gradp(), out->shape(), 0, out->size(), false);
         } else {
             throw std::runtime_error("Engine::backward: missing out's grad");
         }

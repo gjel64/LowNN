@@ -5,6 +5,7 @@
 #include "core/grad_fn.hpp"
 #include "core/Math/vecUtils.hpp"
 #include "core/GradFn/add_grad_fn.hpp"
+#include "core/GradFn/indexing_grad_fn.hpp"
 #include "core/engine.hpp"
 
 /* must TODO:
@@ -12,7 +13,7 @@
     - autograd (grad_fn, grad_accumulator, output_nr)
     - flatten method (remove 1s dims)
     - add "with no_grad"
-    - create tensor full of a value with shape
+    - add methods like abs, pow, sum, mean...
 
 wanted TODO:
     - internal iterator over the real data (to avoid strides / offset code duplication)
@@ -34,8 +35,6 @@ private:
 
     // -------- Private methods --------
     void _set_grad_fn(std::shared_ptr<GradFn> grad_fn) { _grad_fn = grad_fn; }
-
-
 
 public:
     // -------- Init --------
@@ -80,6 +79,9 @@ public:
         }
         if (_require_grad) {
             _pgrad = std::make_shared<float[]>(_size);
+            for (std::size_t i = 0; i < _size; i++){
+                _pgrad.get()[i] = 0.0f;
+            }
         }
     }
     Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape, std::size_t offset, std::vector<std::size_t> strides, bool require_grad = false, std::vector<std::shared_ptr<Tensor>> parents = {});
@@ -89,6 +91,7 @@ public:
     const float item() const;
     const std::string to_string() const;
     void print();   
+    void print_grad();
     std::shared_ptr<Tensor> squeeze();
     void backward(std::shared_ptr<Tensor> grad = nullptr);
     void ensure_grad_allocated();
@@ -111,7 +114,7 @@ public:
         return Tensor(data, shape, 0, size);
     } 
     static Tensor fill(float value, const std::vector<std::size_t>& shape);
-    
+
 
     // -------- Indexing --------
     template <typename... Args> // auto-depth indexing with offset / stride / variadic template
@@ -120,6 +123,10 @@ public:
 
         if (vec.size() > _shape.size() || vec.size() == 0){
             throw std::invalid_argument("Too many indices for tensor");
+        }
+        else if (_size == 1)
+        {
+            throw std::invalid_argument("Use .item() to get the value of a 1-item tensor");
         }
         else if (sizeof...(indices) == _shape.size()) 
         {
@@ -132,12 +139,19 @@ public:
                 }
                 index_of_data += _strides[i] * vec[i];
             }
-            return std::make_shared<Tensor>(_pdata, std::vector<std::size_t>{1}, _offset + index_of_data, std::vector<std::size_t>{});
+            
+            // grad things
+            std::shared_ptr<Tensor> result = std::make_shared<Tensor>(_pdata, std::vector<std::size_t>{1}, _offset + index_of_data, std::vector<std::size_t>{}, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+            std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this() };
+            auto grad_fn = std::make_shared<IndexingGradFn>(inputs, std::weak_ptr<Tensor>(result));
+            result->_set_grad_fn(grad_fn);
+
+            return result;
         }
         else //(sizeof...(indices) < _shape.size()) -> need a vector 
         {
 
-            std::size_t offset = 0;
+            std::size_t offset = _offset;
             std::size_t i = 0;
             for (auto indice : vec) 
             {
@@ -148,7 +162,13 @@ public:
             std::vector<std::size_t> shape(_shape.begin() + vec.size(), _shape.end());
             std::vector<std::size_t> strides(_strides.begin() + vec.size(), _strides.end());
 
-            return std::make_shared<Tensor>(_pdata, shape, offset, strides);
+            std::shared_ptr<Tensor> result = std::make_shared<Tensor>(_pdata, shape, offset, strides, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+
+            std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this() };
+            auto grad_fn = std::make_shared<IndexingGradFn>(inputs, std::weak_ptr<Tensor>(result));
+            result->_set_grad_fn(grad_fn);
+
+            return result;
         }
     }
 
@@ -173,6 +193,6 @@ public:
     std::shared_ptr<GradFn> grad_fn() { return _grad_fn; }
 
     // -------- Setters --------
-    void set_require_grad(bool require_grad) { _require_grad = require_grad; if (_require_grad && !_pgrad) { _pgrad = std::make_shared<float[]>(_size); } }
+    void set_require_grad(bool require_grad);
 
 };

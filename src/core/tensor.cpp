@@ -17,7 +17,9 @@ Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape,
 
     if (_require_grad) {
         _pgrad = std::make_shared<float[]>(size);
-        for (std::size_t i = 0; i < _size; ++i) _pgrad.get()[i] = 0.0f;
+        for (std::size_t i = 0; i < _size; i++){
+             _pgrad.get()[i] = 0.0f;
+        }
     }
 }
 
@@ -35,7 +37,9 @@ Tensor::Tensor(std::shared_ptr<float[]> data, std::vector<std::size_t> shape,
     }
     if (_require_grad) {
         _pgrad = std::make_shared<float[]>(size);
-        for (std::size_t i = 0; i < _size; ++i) _pgrad.get()[i] = 0.0f;
+        for (std::size_t i = 0; i < _size; i++){
+            _pgrad.get()[i] = 0.0f;
+        }
     }
 
 }
@@ -90,6 +94,31 @@ void Tensor::print()
     std::function<void(std::size_t)> print_recursive = [&](std::size_t dim) {
         if (dim == _shape.size()) {
             std::cout << _pdata[_offset + count] << ", ";
+            count++;
+            return;
+        }
+        std::cout << "[";
+        for (std::size_t i = 0; i < _shape[dim]; i++) {
+            print_recursive(dim + 1);
+        }
+        std::cout << "]";
+    };
+    print_recursive(0);
+    std::cout << "\n";
+
+}
+
+void Tensor::print_grad() 
+{
+    if (!_pgrad) {
+        std::cout << "No grad allocated\n";
+        return;
+    }
+    std::size_t count = 0;
+    
+    std::function<void(std::size_t)> print_recursive = [&](std::size_t dim) {
+        if (dim == _shape.size()) {
+            std::cout << _pgrad[count] << ", ";
             count++;
             return;
         }
@@ -194,8 +223,6 @@ std::shared_ptr<Tensor> Tensor::operator+ (std::shared_ptr<Tensor> other){
             }
         }
     }
-    
-    // TODO: add with no_grad
 
     std::vector<std::shared_ptr<Tensor>> parents = {std::shared_ptr<Tensor>(shared_from_this()), other};
     bool req_grad = this->require_grad() || other->require_grad();
@@ -493,3 +520,11 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
 
 
 
+void Tensor::set_require_grad(bool require_grad) {
+    // set require grad and reset grad if require grad is true
+    _require_grad = require_grad; 
+    if (_require_grad) { 
+        _pgrad = std::make_shared<float[]>(_size);
+        for (std::size_t i = 0; i < _size; i++) _pgrad.get()[i] = 0.0f;
+    }
+}
