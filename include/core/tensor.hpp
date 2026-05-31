@@ -13,7 +13,7 @@
     - autograd (grad_fn, grad_accumulator, output_nr)
     - flatten method (remove 1s dims)
     - add "with no_grad"
-    - add methods like abs, pow, sum, mean...
+    - add methods like abs, pow, mean, relu...
 
 wanted TODO:
     - internal iterator over the real data (to avoid strides / offset code duplication)
@@ -180,6 +180,7 @@ public:
     std::shared_ptr<Tensor> sqrt();
     std::shared_ptr<Tensor> operator/ (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
+    std::shared_ptr<Tensor> sum(int dim = -1, bool keepdim = false);
 
     // -------- Getters --------
     const std::shared_ptr<float[]> data() const { return _pdata; }

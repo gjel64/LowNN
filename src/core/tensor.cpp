@@ -518,9 +518,99 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
     return std::make_shared<Tensor>(result_data, result_shape, 0, result_size);
 }
 
+std::shared_ptr<Tensor> Tensor::sum(int dim, bool keepdim)
+{
+    // dim -> sum over the dim, else (-1) sum over all
+    // keepdim = false -> remove dim in axes, keepdim = true -> set dim in axes to 1
 
+    /*
+    Found out that if you shift the strides and put a 0 at dim, you just have to iterate
+    */
+    if (dim < -1 || dim >= (int)(_shape.size()))
+    {
+        throw std::invalid_argument("Invalid dimension for sum");
+    }
+    if (keepdim)
+    {
+        throw std::invalid_argument("keepdim not implemented yet on sum");
+    }
 
-void Tensor::set_require_grad(bool require_grad) {
+    if (dim == -1)
+    {
+        // sum over all -> result is a scalar
+        float sum = 0.0f;
+        for (std::size_t i = 0; i < _size; i++)
+        {
+            sum += _pdata[_offset + i];
+        }
+        std::shared_ptr<Tensor> result = std::make_shared<Tensor>(sum, this->require_grad());
+        return result;
+    }
+
+    std::vector<std::size_t> result_shape;
+    for (std::size_t i = 0; i < _shape.size(); i++)
+    {
+        if (i != dim)
+        {
+            result_shape.push_back(_shape[i]);
+        }
+    }
+
+    std::size_t result_size = 1;
+    for (std::size_t s : result_shape)
+    {
+        result_size *= s;
+    }
+    std::shared_ptr<float[]> result_data = std::make_shared<float[]>(result_size);
+    std::fill_n(result_data.get(), result_size, 0.0f);
+
+    // ----- calc the stride with the shift
+    std::vector<std::size_t> shifted_stride = _strides;
+    shifted_stride.insert(shifted_stride.begin() + 0, 0); // insert 0 at start
+    std::size_t zero_pos = 0;
+    while (zero_pos < dim + 1)
+    {
+        shifted_stride[zero_pos] = shifted_stride[zero_pos + 1];
+        shifted_stride[zero_pos + 1] = 0;
+        zero_pos += 1;
+    }
+    shifted_stride.erase(shifted_stride.begin() + 0);
+
+    // ----- main loop
+    std::vector<std::size_t> indices(_shape.size(), 0);
+    for (std::size_t i = 0; i < _size; i++)
+    {
+        std::size_t result_index = 0;
+        // calc the index
+
+        for (std::size_t j = 0; j < shifted_stride.size(); j++)
+        {
+            result_index += indices[j] * shifted_stride[j];
+        }
+        // add to the result
+        result_data[result_index] += _pdata[_offset + i];
+
+        // forward the indices
+        for (int d = (int)(_shape.size()) - 1; d >= 0; d--)
+        {
+            indices[d] += 1;
+            if (indices[d] >= _shape[d]) {
+                indices[d] = 0;
+            }
+            else {
+                break;
+            }
+        }
+    }
+
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, result_shape, 0, result_size, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+    return result;
+}
+
+// ------------------------ Setters -----------------------
+
+void Tensor::set_require_grad(bool require_grad)
+{
     // set require grad and reset grad if require grad is true
     _require_grad = require_grad; 
     if (_require_grad) { 

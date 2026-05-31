@@ -417,8 +417,53 @@ TEST(TensorTest, Matmul)
     EXPECT_FLOAT_EQ( ((*t27)[1, 1, 1, 1]->item()), 16.0f );
 } 
 
+TEST(TensorTest, Sum)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
+    std::shared_ptr<Tensor> t2 = t1->sum(0);
+    EXPECT_EQ(t2->shape(), (std::vector<std::size_t>{2}));
+    EXPECT_FLOAT_EQ( ((*t2)[0]->item()), 4.0f );
+    EXPECT_FLOAT_EQ( ((*t2)[1]->item()), 6.0f );
+
+    std::shared_ptr<Tensor> t3 = t1->sum(1);
+    EXPECT_EQ(t3->shape(), (std::vector<std::size_t>{2}));
+    EXPECT_FLOAT_EQ( ((*t3)[0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t3)[1]->item()), 7.0f );
+
+
+    std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}},
+        {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    });
+    std::shared_ptr<Tensor> t5 = t4->sum(0);
+    EXPECT_EQ(t5->shape(), (std::vector<std::size_t>{2, 2}));
+    EXPECT_FLOAT_EQ( ((*t5)[0, 0]->item()), 6.0f );
+    EXPECT_FLOAT_EQ( ((*t5)[0, 1]->item()), 8.0f );
+    EXPECT_FLOAT_EQ( ((*t5)[1, 0]->item()), 10.0f );
+    EXPECT_FLOAT_EQ( ((*t5)[1, 1]->item()), 12.0f );
+
+    std::shared_ptr<Tensor> t6 = t4->sum(1);
+    EXPECT_EQ(t6->shape(), (std::vector<std::size_t>{2, 2}));
+    EXPECT_FLOAT_EQ( ((*t6)[0, 0]->item()), 4.0f );
+    EXPECT_FLOAT_EQ( ((*t6)[0, 1]->item()), 6.0f );
+    EXPECT_FLOAT_EQ( ((*t6)[1, 0]->item()), 12.0f );
+    EXPECT_FLOAT_EQ( ((*t6)[1, 1]->item()), 14.0f );
+
+    std::shared_ptr<Tensor> t7 = t4->sum(2);
+    EXPECT_EQ(t7->shape(), (std::vector<std::size_t>{2, 2}));
+    EXPECT_FLOAT_EQ( ((*t7)[0, 0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t7)[0, 1]->item()), 7.0f );
+    EXPECT_FLOAT_EQ( ((*t7)[1, 0]->item()), 11.0f );
+    EXPECT_FLOAT_EQ( ((*t7)[1, 1]->item()), 15.0f );
+
+    std::shared_ptr<Tensor> t8 = t4->sum();
+    EXPECT_EQ(t8->shape(), (std::vector<std::size_t>{1}));
+    EXPECT_FLOAT_EQ( t8->item(), 36.0f );
+}
+
 TEST(TensorTest, BackpropAdd)
 {
+    
     std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(2.0f, true);
     std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(3.0f, true);
     std::shared_ptr<Tensor> t3 = (*t1) + t2;
@@ -498,6 +543,7 @@ TEST(TensorTest, BackpropAdd)
     EXPECT_FLOAT_EQ( t20->gradp().get()[0], 1.0f );
     EXPECT_FLOAT_EQ( t21->gradp().get()[0], 1.0f );
     EXPECT_FLOAT_EQ( t22->gradp().get()[0], 1.0f );
+    
 }
 
 TEST(TensorTest, BackpropIndexing)
@@ -569,8 +615,7 @@ TEST(TensorTest, BackpropIndexing)
     EXPECT_FLOAT_EQ( t7->gradp().get()[5], 1.0f );
     EXPECT_FLOAT_EQ( t7->gradp().get()[6], 0.0f );
     EXPECT_FLOAT_EQ( t7->gradp().get()[7], 0.0f );
-
-
-
-
 }
+
+
+

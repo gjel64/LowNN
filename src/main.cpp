@@ -5,9 +5,10 @@
 int main() {
     std::cout << "Hello, LowNN!" << std::endl;
 
-    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{{1.0f, 2.0f}}, true);
-    std::shared_ptr<Tensor> t2 = (*t1)[0];
-    t2->backward();
+    std::vector<std::size_t> a = {1, 2, 3};
+    auto b = a;
+    b[0] = 2;
+    std::cout << "a : [" << a[0] << a[1] << a[2] << "]";
 
     return 0;
 }
