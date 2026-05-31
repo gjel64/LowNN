@@ -231,7 +231,7 @@ std::shared_ptr<Tensor> Tensor::operator+ (std::shared_ptr<Tensor> other){
     std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, result_shape, 0, result_stride, req_grad, parents);
 
     std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this(), other };
-    auto grad_fn = std::make_shared<AddGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    std::shared_ptr<GradFn> grad_fn = std::make_shared<AddGradFn>(inputs, std::weak_ptr<Tensor>(result));
     result->_set_grad_fn(grad_fn);
     return result;
 }
@@ -308,8 +308,15 @@ std::shared_ptr<Tensor> Tensor::operator* (std::shared_ptr<Tensor> other){
             }
         }
     }
+    std::vector<std::shared_ptr<Tensor>> parents = {std::shared_ptr<Tensor>(shared_from_this()), other};
+    bool req_grad = this->require_grad() || other->require_grad();
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, result_shape, 0, result_stride, req_grad, parents);
 
-    return std::make_shared<Tensor>(result_data, result_shape, 0, result_stride);    
+    std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this(), other };
+    std::shared_ptr<GradFn> grad_fn = std::make_shared<MulGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    result->_set_grad_fn(grad_fn);
+
+    return result;    
 }
 
 std::shared_ptr<Tensor> Tensor::operator- (std::shared_ptr<Tensor> other){

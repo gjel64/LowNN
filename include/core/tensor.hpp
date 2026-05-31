@@ -6,6 +6,7 @@
 #include "core/Math/vecUtils.hpp"
 #include "core/GradFn/add_grad_fn.hpp"
 #include "core/GradFn/indexing_grad_fn.hpp"
+#include "core/GradFn/mul_grad_fn.hpp"
 #include "core/engine.hpp"
 
 /* must TODO:
@@ -14,6 +15,7 @@
     - flatten method (remove 1s dims)
     - add "with no_grad"
     - add methods like mean, relu...
+    - add view method (for reshape, transpose...)
 
 wanted TODO:
     - internal iterator over the real data (to avoid strides / offset code duplication)
