@@ -641,6 +641,22 @@ std::shared_ptr<Tensor> Tensor::pow(float exponent)
     return result;
 }
 
+std::shared_ptr<Tensor> Tensor::relu()
+{
+    std::shared_ptr<float[]> result_data = std::make_shared<float[]>(_size);
+    for (std::size_t i = 0; i < _size; i++ ) {
+        if (_pdata[i] < 0){
+            result_data[i] = 0.0f;
+        }
+        else {
+            result_data[i] = _pdata[i];
+        }
+     }
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, _shape, 0, _size, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+    return result;
+}
+
+
 
 // ------------------------ Setters -----------------------
 

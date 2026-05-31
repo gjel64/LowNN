@@ -178,13 +178,14 @@ public:
     std::shared_ptr<Tensor> operator+ (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> operator* (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> operator- (std::shared_ptr<Tensor> other);
-    std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> other);
-    std::shared_ptr<Tensor> sqrt();
     std::shared_ptr<Tensor> operator/ (std::shared_ptr<Tensor> other);
     std::shared_ptr<Tensor> matmul(std::shared_ptr<Tensor> other);
+    std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> other);
+    std::shared_ptr<Tensor> sqrt();
     std::shared_ptr<Tensor> sum(int dim = -1, bool keepdim = false);
     std::shared_ptr<Tensor> abs();
     std::shared_ptr<Tensor> pow(float exponent);
+    std::shared_ptr<Tensor> relu();
 
     // -------- Getters --------
     const std::shared_ptr<float[]> data() const { return _pdata; }
