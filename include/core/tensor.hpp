@@ -27,7 +27,7 @@ OP     | implemented  | grad_fn implemented
 -      |     yes      |      no
 /      |     yes      |      no
 []     |     yes      |      yes
-matmul |     yes      |      no
+matmul |     yes      |      yes
 pow    |     yes      |      no
 abs    |     yes      |      no
 relu   |     yes      |      no
