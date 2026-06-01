@@ -461,15 +461,8 @@ TEST(TensorTest, Sum)
     EXPECT_FLOAT_EQ( t8->item(), 36.0f );
 }
 
-TEST(TensorTest, PowAndAbsAndRelu)
+TEST(TensorTest, AbsAndRelu)
 {
-    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{1.0f, 2.0f}, true);
-    std::shared_ptr<Tensor> t2 = t1->pow(2.0f);
-    EXPECT_EQ(t2->shape(), (std::vector<std::size_t>{2}));
-    EXPECT_FLOAT_EQ( ((*t2)[0]->item()), 1.0f );
-    EXPECT_FLOAT_EQ( ((*t2)[1]->item()), 4.0f );
-
-
     std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(std::vector<float>{-1.0f, 2.0f}, true);
     std::shared_ptr<Tensor> t4 = t3->abs();
     EXPECT_EQ(t4->shape(), (std::vector<std::size_t>{2}));
@@ -481,6 +474,20 @@ TEST(TensorTest, PowAndAbsAndRelu)
     EXPECT_EQ(t6->shape(), (std::vector<std::size_t>{2}));
     EXPECT_FLOAT_EQ( ((*t6)[0]->item()), 0.0f );
     EXPECT_FLOAT_EQ( ((*t6)[1]->item()), 2.0f );
+
+    std::shared_ptr<Tensor> t7 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{-1.0f, 2.0f}, {3.0f, -4.0f}}, true);
+    std::shared_ptr<Tensor> t8 = (*t7)[1];
+    std::shared_ptr<Tensor> t9 = t8->relu();
+    EXPECT_EQ(t9->shape(), (std::vector<std::size_t>{2}));
+    EXPECT_FLOAT_EQ( ((*t9)[0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t9)[1]->item()), 0.0f );
+
+    std::shared_ptr<Tensor> t10 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{-1.0f, 2.0f}, {3.0f, -4.0f}}, true);
+    std::shared_ptr<Tensor> t11 = (*t10)[1];
+    std::shared_ptr<Tensor> t12 = t11->abs();
+    EXPECT_EQ(t12->shape(), (std::vector<std::size_t>{2}));
+    EXPECT_FLOAT_EQ( ((*t12)[0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t12)[1]->item()), 4.0f );
 
 }
 

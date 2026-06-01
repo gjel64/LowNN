@@ -16,6 +16,7 @@
     - flatten method (remove 1s dims)
     - add "with no_grad"
     - add view method (for reshape, transpose...)
+    - iterate well over data in abs, relu, pow... (with strides and offset)
 
 wanted TODO:
     - internal iterator over the real data (to avoid strides / offset code duplication)
@@ -202,7 +203,6 @@ public:
     std::shared_ptr<Tensor> sqrt();
     std::shared_ptr<Tensor> sum(int dim = -1, bool keepdim = false);
     std::shared_ptr<Tensor> abs();
-    std::shared_ptr<Tensor> pow(float exponent);
     std::shared_ptr<Tensor> relu();
 
     // -------- Getters --------
