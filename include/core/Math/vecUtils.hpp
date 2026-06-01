@@ -52,4 +52,6 @@ public:
     } 
 
     static std::vector<size_t> broadcast(const std::vector<size_t>& shape1, std::vector<size_t> shape2);
+
+    static std::vector<size_t> squeeze_shape(std::vector<size_t> shape);
 };

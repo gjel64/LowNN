@@ -28,3 +28,13 @@ std::vector<size_t> VecUtils::broadcast(const std::vector<size_t>& shape1_in, st
     }
     return result_shape;
 }
+
+std::vector<size_t> VecUtils::squeeze_shape(std::vector<size_t> shape) {
+    std::vector<size_t> squeezed_shape;
+    for (size_t dim : shape) {
+        if (dim != 1) {
+            squeezed_shape.push_back(dim);
+        }
+    }
+    return squeezed_shape;
+}
