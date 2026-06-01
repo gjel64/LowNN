@@ -662,7 +662,30 @@ std::shared_ptr<Tensor> Tensor::relu()
     return result;
 }
 
+std::shared_ptr<Tensor> Tensor::log()
+{
+    std::shared_ptr<float[]> result_data = std::make_shared<float[]>(_size);
+    for (std::size_t i = 0; i < _size; i++ ) {
+        if (_pdata[i + _offset] <= 0){
+            throw std::runtime_error("Log of negative number is not defined");
+        }
+        else {
+            result_data[i] = std::log(_pdata[i + _offset]);
+        }
+    }
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, _shape, 0, _size, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+    return result;
+}
 
+std::shared_ptr<Tensor> Tensor::exp()
+{
+    std::shared_ptr<float[]> result_data = std::make_shared<float[]>(_size);
+    for (std::size_t i = 0; i < _size; i++ ) {
+        result_data[i] = std::exp(_pdata[i + _offset]);
+    }
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, _shape, 0, _size, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+    return result;
+}
 
 // ------------------------ Setters -----------------------
 

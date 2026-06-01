@@ -205,6 +205,9 @@ public:
     std::shared_ptr<Tensor> sum(int dim = -1, bool keepdim = false);
     std::shared_ptr<Tensor> abs();
     std::shared_ptr<Tensor> relu();
+    std::shared_ptr<Tensor> log();
+    std::shared_ptr<Tensor> exp();
+
 
     // -------- Getters --------
     const std::shared_ptr<float[]> data() const { return _pdata; }
