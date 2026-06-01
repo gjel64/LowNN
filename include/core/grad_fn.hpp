@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "core/Math/vecUtils.hpp"
+#include "core/Utils/vecUtils.hpp"
 
 class Tensor; // forward declaration
 

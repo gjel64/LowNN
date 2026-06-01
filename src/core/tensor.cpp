@@ -149,7 +149,20 @@ Tensor Tensor::fill(float value, const std::vector<std::size_t>& shape) {
     return Tensor(data, shape, 0, size);
 }
 
+Tensor Tensor::randn(const std::vector<std::size_t> shape, float mean, float stddev) {
+    std::size_t size = 1;
+    for (std::size_t s : shape){
+        size *= s;
+    }
 
+    RandomGenerator* rng = RandomGenerator::getInstance();
+
+    std::shared_ptr<float[]> data = std::make_shared<float[]>(size);
+    for (std::size_t i = 0; i < size; ++i) {
+        data[i] = rng->rand_dist(mean, stddev);
+    }
+    return Tensor(data, shape, 0, size);
+}
 
 // ------------------------ Operators ------------------------ 
 

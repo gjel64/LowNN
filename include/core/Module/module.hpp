@@ -8,6 +8,6 @@ public:
     Module();
     virtual std::shared_ptr<Tensor> forward(std::shared_ptr<Tensor> input) = 0;
     std::shared_ptr<Tensor> operator()(std::shared_ptr<Tensor> input);
-    std::vector<std::shared_ptr<Tensor>> parameters();
+    virtual std::vector<std::shared_ptr<Tensor>> parameters() = 0;
 
 };

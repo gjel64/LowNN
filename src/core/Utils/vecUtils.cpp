@@ -1,4 +1,4 @@
-#include "core/Math/vecUtils.hpp"
+#include "core/Utils/vecUtils.hpp"
 
 std::vector<size_t> VecUtils::broadcast(const std::vector<size_t>& shape1_in, std::vector<size_t> shape2){
     std::vector<size_t> shape1 = shape1_in;

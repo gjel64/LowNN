@@ -1,6 +1,6 @@
 #pragma once
 #include "core/grad_fn.hpp"
-#include "core/Math/vecUtils.hpp"
+#include "core/Utils/vecUtils.hpp"
 
 class AddGradFn : public GradFn {
 public:
