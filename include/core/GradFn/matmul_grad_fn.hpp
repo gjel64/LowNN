@@ -1,0 +1,13 @@
+#pragma once
+#include "core/grad_fn.hpp"
+#include "core/Math/vecUtils.hpp"
+
+class MatMulGradFn : public GradFn {
+public:
+    MatMulGradFn(std::vector<std::weak_ptr<Tensor>> inputs, std::weak_ptr<Tensor> output);
+    
+    void backward(
+        const std::shared_ptr<Tensor>& out,
+        const std::shared_ptr<Tensor>& out_grad
+    ) override;
+};

@@ -523,8 +523,11 @@ std::shared_ptr<Tensor> Tensor::matmul(std::shared_ptr<Tensor> other)
         }
     }
 
-
-    return std::make_shared<Tensor>(result_data, result_shape, 0, result_size);
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, result_shape, 0, result_size, this->require_grad() || other->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this(), other});
+    std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this(), other };
+    std::shared_ptr<GradFn> grad_fn = std::make_shared<MatMulGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    result->_set_grad_fn(grad_fn);
+    return result;
 }
 
 std::shared_ptr<Tensor> Tensor::sum(int dim, bool keepdim)
@@ -669,3 +672,5 @@ void Tensor::set_require_grad(bool require_grad)
         for (std::size_t i = 0; i < _size; i++) _pgrad.get()[i] = 0.0f;
     }
 }
+
+

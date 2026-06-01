@@ -8,17 +8,35 @@
 #include "core/GradFn/indexing_grad_fn.hpp"
 #include "core/GradFn/mul_grad_fn.hpp"
 #include "core/engine.hpp"
+#include "core/GradFn/matmul_grad_fn.hpp"
 
 /* must TODO:
     - indexing with : and negative indexing
     - autograd (grad_fn, grad_accumulator, output_nr)
     - flatten method (remove 1s dims)
     - add "with no_grad"
-    - add methods like mean, relu...
     - add view method (for reshape, transpose...)
 
 wanted TODO:
     - internal iterator over the real data (to avoid strides / offset code duplication)
+
+Operation board TODO:
+OP     | implemented  | grad_fn implemented
++      |     yes      |      yes
+*      |     yes      |      yes
+-      |     yes      |      no
+/      |     yes      |      no
+[]     |     yes      |      yes
+matmul |     yes      |      no
+pow    |     yes      |      no
+abs    |     yes      |      no
+relu   |     yes      |      no
+mean   |     no       |      no
+log    |     no       |      no
+exp    |     no       |      no
+view   |     no       |      no
+reshape|     no       |      no
+
 */
 
 class Tensor: public std::enable_shared_from_this<Tensor> {

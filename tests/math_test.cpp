@@ -55,3 +55,27 @@ TEST(VecUtilsTest, Broadcast)
     expected_shape = {5, 7, 3, 4, 12, 4};
     EXPECT_EQ(VecUtils::broadcast(shape1, shape2), expected_shape);
 }
+
+
+TEST(VecUtilsTest, SqueezeShape) 
+{
+    std::vector<std::size_t> shape = {1, 3, 1, 4, 1};
+    std::vector<std::size_t> expected_shape = {3, 4};
+    EXPECT_EQ(VecUtils::squeeze_shape(shape), expected_shape);
+
+    shape = {1, 1, 1};
+    expected_shape = {};
+    EXPECT_EQ(VecUtils::squeeze_shape(shape), expected_shape);
+
+    shape = {2, 3, 4};
+    expected_shape = {2, 3, 4};
+    EXPECT_EQ(VecUtils::squeeze_shape(shape), expected_shape);
+
+    shape = {1, 5, 1, 6};
+    expected_shape = {5, 6};
+    EXPECT_EQ(VecUtils::squeeze_shape(shape), expected_shape);
+
+    shape = {};
+    expected_shape = {};
+    EXPECT_EQ(VecUtils::squeeze_shape(shape), expected_shape);
+}

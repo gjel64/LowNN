@@ -721,3 +721,147 @@ TEST(TensorTest, BackpropMul)
     EXPECT_FLOAT_EQ( t14->gradp().get()[2], 10.0f );
     EXPECT_FLOAT_EQ( t14->gradp().get()[3], 12.0f );
 }
+
+TEST(TensorTest, BackpropMatmul)
+{
+    // 1D @ 1D
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{1.0f, 2.0f, 3.0f}, true);
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(std::vector<float>{4.0f, 5.0f, 6.0f}, true);
+    std::shared_ptr<Tensor> t3 = t1->matmul(t2);
+    t3->backward();
+    EXPECT_FLOAT_EQ( t1->gradp().get()[0], 4.0f );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[1], 5.0f );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[2], 6.0f );
+    EXPECT_FLOAT_EQ( t2->gradp().get()[0], 1.0f );
+    EXPECT_FLOAT_EQ( t2->gradp().get()[1], 2.0f );
+    EXPECT_FLOAT_EQ( t2->gradp().get()[2], 3.0f );
+
+    // 2D @ 2D
+    std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}}, true);
+    std::shared_ptr<Tensor> t5 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{5.0f, 6.0f}, {7.0f, 8.0f}}, true);
+    std::shared_ptr<Tensor> t6 = t4->matmul(t5);
+    t6->backward(std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 1.0f}, {1.0f, 1.0f}}));
+    EXPECT_FLOAT_EQ( t4->gradp().get()[0], 11.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[1], 15.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[2], 11.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[3], 15.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[0], 4.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[1], 4.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[2], 6.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[3], 6.0f );
+
+    // 3D @ 2D
+    std::shared_ptr<Tensor> t19 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}},
+        {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    }, true);
+    std::shared_ptr<Tensor> t20 = std::make_shared<Tensor>(std::vector<std::vector<float>>{
+        {9.0f, 10.0f},
+        {11.0f, 12.0f}
+    }, true);
+    std::shared_ptr<Tensor> t21 = t19->matmul(t20);
+    t21->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, {2, 2, 2})));
+    EXPECT_FLOAT_EQ( t19->gradp().get()[0], 19.0f );
+    EXPECT_FLOAT_EQ( t19->gradp().get()[1], 23.0f );
+    EXPECT_FLOAT_EQ( t19->gradp().get()[2], 19.0f );
+    EXPECT_FLOAT_EQ( t19->gradp().get()[3], 23.0f );
+    EXPECT_FLOAT_EQ( t20->gradp().get()[0], 16.0f );
+    EXPECT_FLOAT_EQ( t20->gradp().get()[1], 16.0f );
+    EXPECT_FLOAT_EQ( t20->gradp().get()[2], 20.0f );
+    EXPECT_FLOAT_EQ( t20->gradp().get()[3], 20.0f );
+
+    // 3D @ 3D
+    std::shared_ptr<Tensor> t25 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}},
+        {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    }, true);
+    std::shared_ptr<Tensor> t26 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{9.0f, 10.0f}, {11.0f, 12.0f}},
+        {{13.0f, 14.0f}, {15.0f, 16.0f}}
+    }, true);
+    std::shared_ptr<Tensor> t27 = t25->matmul(t26);
+    t27->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, {2, 2, 2})));
+    EXPECT_FLOAT_EQ( t25->gradp().get()[0], 19.0f );
+    EXPECT_FLOAT_EQ( t25->gradp().get()[1], 23.0f );
+    EXPECT_FLOAT_EQ( t25->gradp().get()[2], 19.0f );
+    EXPECT_FLOAT_EQ( t25->gradp().get()[3], 23.0f );
+    EXPECT_FLOAT_EQ( t25->gradp().get()[4], 27.0f );
+    EXPECT_FLOAT_EQ( t25->gradp().get()[5], 31.0f );
+    EXPECT_FLOAT_EQ( t25->gradp().get()[6], 27.0f );
+    EXPECT_FLOAT_EQ( t25->gradp().get()[7], 31.0f );
+
+    EXPECT_FLOAT_EQ( t26->gradp().get()[0], 4.0f );
+    EXPECT_FLOAT_EQ( t26->gradp().get()[1], 4.0f );
+    EXPECT_FLOAT_EQ( t26->gradp().get()[2], 6.0f );
+    EXPECT_FLOAT_EQ( t26->gradp().get()[3], 6.0f );
+    EXPECT_FLOAT_EQ( t26->gradp().get()[4], 12.0f );
+    EXPECT_FLOAT_EQ( t26->gradp().get()[5], 12.0f );
+    EXPECT_FLOAT_EQ( t26->gradp().get()[6], 14.0f );
+    EXPECT_FLOAT_EQ( t26->gradp().get()[7], 14.0f );
+
+    // 3D @ 1D
+    std::shared_ptr<Tensor> t28 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{1.0f, 2.0f}, {3.0f, 4.0f}},
+        {{5.0f, 6.0f}, {7.0f, 8.0f}}
+    }, true);
+    std::shared_ptr<Tensor> t29 = std::make_shared<Tensor>(std::vector<float>{9.0f, 10.0f}, true);
+    std::shared_ptr<Tensor> t30 = t28->matmul(t29);
+    t30->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, {2, 2})));
+    EXPECT_FLOAT_EQ( t28->gradp().get()[0], 9.0f );
+    EXPECT_FLOAT_EQ( t28->gradp().get()[1], 10.0f );
+    EXPECT_FLOAT_EQ( t28->gradp().get()[2], 9.0f );
+    EXPECT_FLOAT_EQ( t28->gradp().get()[3], 10.0f );
+    EXPECT_FLOAT_EQ( t28->gradp().get()[4], 9.0f );
+    EXPECT_FLOAT_EQ( t28->gradp().get()[5], 10.0f );
+    EXPECT_FLOAT_EQ( t28->gradp().get()[6], 9.0f );
+    EXPECT_FLOAT_EQ( t28->gradp().get()[7], 10.0f );
+    EXPECT_FLOAT_EQ( t29->gradp().get()[0], 16.0f );
+    EXPECT_FLOAT_EQ( t29->gradp().get()[1], 20.0f );
+
+    // 4D @ 4D
+    std::shared_ptr<Tensor> t31 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<std::vector<float>>>>{
+        {{{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}},
+        {{{9.0f, 10.0f}, {11.0f, 12.0f}}, {{13.0f, 14.0f}, {15.0f, 16.0f}}}
+    }, true);
+    std::shared_ptr<Tensor> t32 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<std::vector<float>>>>{
+        {{{17.0f, 18.0f}, {19.0f, 20.0f}}, {{21.0f, 22.0f}, {23.0f, 24.0f}}},
+        {{{25.0f, 26.0f}, {27.0f, 28.0f}}, {{29.0f, 30.0f}, {31.0f, 32.0f}}}
+    }, true);
+    std::shared_ptr<Tensor> t33 = t31->matmul(t32);
+    t33->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, {2, 2, 2, 2})));
+    EXPECT_FLOAT_EQ( t31->gradp().get()[0], 35.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[1], 39.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[2], 35.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[3], 39.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[4], 43.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[5], 47.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[6], 43.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[7], 47.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[8], 51.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[9], 55.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[10], 51.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[11], 55.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[12], 59.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[13], 63.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[14], 59.0f );
+    EXPECT_FLOAT_EQ( t31->gradp().get()[15], 63.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[0], 4.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[1], 4.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[2], 6.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[3], 6.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[4], 12.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[5], 12.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[6], 14.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[7], 14.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[8], 20.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[9], 20.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[10], 22.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[11], 22.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[12], 28.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[13], 28.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[14], 30.0f );
+    EXPECT_FLOAT_EQ( t32->gradp().get()[15], 30.0f );
+}
+
+
+
