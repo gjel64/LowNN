@@ -10,6 +10,8 @@
 #include "core/engine.hpp"
 #include "core/GradFn/matmul_grad_fn.hpp"
 #include "core/Utils/rand_gen.hpp"
+#include "core/GradFn/relu_grad_fn.hpp"
+#include "core/GradFn/abs_grad_fn.hpp"
 
 /* must TODO:
     - indexing with : and negative indexing
@@ -31,11 +33,11 @@ OP     | implemented  | grad_fn implemented
 []     |     yes      |      yes
 matmul |     yes      |      yes
 pow    |     yes      |      no
-abs    |     yes      |      no
-relu   |     yes      |      no
+abs    |     yes      |      yes
+relu   |     yes      |      yes
 mean   |     no       |      no
-log    |     no       |      no
-exp    |     no       |      no
+log    |     yes      |      no
+exp    |     yes      |      no
 view   |     no       |      no
 reshape|     no       |      no
 

@@ -644,6 +644,9 @@ std::shared_ptr<Tensor> Tensor::abs()
         }
     }
     std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, _shape, 0, _size, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+    std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this() };
+    std::shared_ptr<GradFn> grad_fn = std::make_shared<AbsGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    result->_set_grad_fn(grad_fn);
     return result;
 }
 
@@ -659,6 +662,9 @@ std::shared_ptr<Tensor> Tensor::relu()
         }
      }
     std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, _shape, 0, _size, this->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this()});
+    std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this() };
+    std::shared_ptr<GradFn> grad_fn = std::make_shared<ReLUGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    result->_set_grad_fn(grad_fn);
     return result;
 }
 
