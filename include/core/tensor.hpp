@@ -2,16 +2,20 @@
 #include <memory>
 #include <iostream>
 #include <cmath>
-#include "core/grad_fn.hpp"
 #include "core/Utils/vecUtils.hpp"
+#include "core/engine.hpp"
+#include "core/Utils/rand_gen.hpp"
+
+// grad fns
+#include "core/grad_fn.hpp"
 #include "core/GradFn/add_grad_fn.hpp"
 #include "core/GradFn/indexing_grad_fn.hpp"
 #include "core/GradFn/mul_grad_fn.hpp"
-#include "core/engine.hpp"
 #include "core/GradFn/matmul_grad_fn.hpp"
-#include "core/Utils/rand_gen.hpp"
 #include "core/GradFn/relu_grad_fn.hpp"
 #include "core/GradFn/abs_grad_fn.hpp"
+#include "core/GradFn/exp_grad_fn.hpp"
+#include "core/GradFn/log_grad_fn.hpp"
 
 /* must TODO:
     - indexing with : and negative indexing
@@ -36,11 +40,11 @@ pow    |     yes      |      no
 abs    |     yes      |      yes
 relu   |     yes      |      yes
 mean   |     no       |      no
-log    |     yes      |      no
-exp    |     yes      |      no
+log    |     yes      |      yes
+exp    |     yes      |      yes
 view   |     no       |      no
 reshape|     no       |      no
-
+tanh   |     no       |      no
 */
 
 class Tensor: public std::enable_shared_from_this<Tensor> {

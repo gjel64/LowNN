@@ -68,4 +68,6 @@ void Engine::backward(std::shared_ptr<Tensor> root, std::shared_ptr<Tensor> grad
             root->gradp().get()[i] += root_grad_data.get()[i];
         }
     }
+
+    // TODO: free grad of non-leaf tensors to save memory (need to be careful with shared_ptr cycles and stuff)
 }
