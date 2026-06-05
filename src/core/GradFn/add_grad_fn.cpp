@@ -15,8 +15,9 @@ void AddGradFn::backward(
     if (!a || !b) {
         throw std::runtime_error("AddGradFn: input tensors no longer exist");
     }
-    std::shared_ptr<float[]> a_grad_data = a->gradp() ? a->gradp() : std::make_shared<float[]>(a->size());
-    std::shared_ptr<float[]> b_grad_data = b->gradp() ? b->gradp() : std::make_shared<float[]>(b->size());
+    std::shared_ptr<float[]> a_grad_data = (a->gradp() == nullptr) ? std::make_shared<float[]>(a->size()) : a->gradp();
+    std::shared_ptr<float[]> b_grad_data = (b->gradp() == nullptr) ? std::make_shared<float[]>(b->size()) : b->gradp();
+
     for (std::size_t i = 0; i < out->size(); i++) {
         a_grad_data.get()[i % a->size()] += out_grad->data().get()[i + out_grad->offset()];
         b_grad_data.get()[i % b->size()] += out_grad->data().get()[i + out_grad->offset()];

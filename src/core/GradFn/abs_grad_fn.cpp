@@ -15,7 +15,9 @@ void AbsGradFn::backward(
     if (!a) {
         throw std::runtime_error("AbsGradFn: input tensor no longer exist");
     }
+    
     std::shared_ptr<float[]> a_grad_data = a->gradp() ? a->gradp() : std::make_shared<float[]>(a->size());
+
     for (std::size_t i = 0; i < out->size(); i++) {
         if (a->data().get()[(i % a->size()) + a->offset()] > 0) {
             a_grad_data.get()[(i % a->size()) + a->offset()] += out_grad->data().get()[i + out_grad->offset()];

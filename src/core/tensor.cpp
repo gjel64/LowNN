@@ -409,7 +409,12 @@ std::shared_ptr<Tensor> Tensor::pow (std::shared_ptr<Tensor> other){
         }
     }
 
-    return std::make_shared<Tensor>(result_data, result_shape, 0, result_stride);    
+
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(result_data, result_shape, 0, result_size, this->require_grad() || other->require_grad(), std::vector<std::shared_ptr<Tensor>>{shared_from_this(), other});
+    std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this(), other };
+    std::shared_ptr<GradFn> grad_fn = std::make_shared<PowGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    result->_set_grad_fn(grad_fn);
+    return result;   
 }
 
 std::shared_ptr<Tensor> Tensor::operator/ (std::shared_ptr<Tensor> other){
@@ -701,6 +706,15 @@ std::shared_ptr<Tensor> Tensor::exp()
     result->_set_grad_fn(grad_fn);
     return result;
 }
+
+std::shared_ptr<Tensor> Tensor::tanh()
+{
+    // tanh(x) = (exp(2x) - 1) / (exp(2x) + 1)
+    return (*((*((*this) * std::make_shared<Tensor>(2.0f))->exp()) + std::make_shared<Tensor>(-1.0f))) / 
+        ((*((*this) * std::make_shared<Tensor>(2.0f))->exp()) + std::make_shared<Tensor>(1.0f));
+}
+
+
 
 // ------------------------ Setters -----------------------
 

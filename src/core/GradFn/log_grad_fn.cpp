@@ -14,7 +14,7 @@ void LogGradFn::backward(
     if (!a) {
         throw std::runtime_error("LogGradFn: input tensor no longer exist");
     }
-    std::shared_ptr<float[]> a_grad_data = a->gradp() ? a->gradp() : std::make_shared<float[]>(a->size());
+    std::shared_ptr<float[]> a_grad_data = (a->gradp() == nullptr) ? std::make_shared<float[]>(a->size()) : a->gradp();
     for (std::size_t i = 0; i < out->size(); i++) {
         float d = 1.0f / a->data().get()[(i % a->size()) + a->offset()];
         a_grad_data.get()[(i % a->size()) + a->offset()] += d * out_grad->data().get()[i + out_grad->offset()];

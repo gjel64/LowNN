@@ -16,6 +16,7 @@
 #include "core/GradFn/abs_grad_fn.hpp"
 #include "core/GradFn/exp_grad_fn.hpp"
 #include "core/GradFn/log_grad_fn.hpp"
+#include "core/GradFn/pow_grad_fn.hpp"
 
 /* must TODO:
     - indexing with : and negative indexing
@@ -32,11 +33,11 @@ Operation board TODO:
 OP     | implemented  | grad_fn implemented
 +      |     yes      |      yes
 *      |     yes      |      yes
--      |     yes      |      no
-/      |     yes      |      no
+-      |     yes      |      yes
+/      |     yes      |      yes
 []     |     yes      |      yes
 matmul |     yes      |      yes
-pow    |     yes      |      no
+pow    |     yes      |      yes
 abs    |     yes      |      yes
 relu   |     yes      |      yes
 mean   |     no       |      no
@@ -44,7 +45,7 @@ log    |     yes      |      yes
 exp    |     yes      |      yes
 view   |     no       |      no
 reshape|     no       |      no
-tanh   |     no       |      no
+tanh   |     yes      |      yes
 */
 
 class Tensor: public std::enable_shared_from_this<Tensor> {
@@ -213,6 +214,7 @@ public:
     std::shared_ptr<Tensor> relu();
     std::shared_ptr<Tensor> log();
     std::shared_ptr<Tensor> exp();
+    std::shared_ptr<Tensor> tanh();
 
 
     // -------- Getters --------

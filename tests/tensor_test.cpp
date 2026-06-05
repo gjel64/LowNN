@@ -521,6 +521,33 @@ TEST(TensorTest, AbsReluLogExp)
 
 }
 
+TEST(TensorTest, Tanh)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{-1.0f, 0.0f, 1.0f}, true);
+    std::shared_ptr<Tensor> t2 = t1->tanh();
+    EXPECT_EQ(t2->shape(), (std::vector<std::size_t>{3}));
+    EXPECT_FLOAT_EQ( ((*t2)[0]->item()), std::tanh(-1.0f) );
+    EXPECT_FLOAT_EQ( ((*t2)[1]->item()), std::tanh(0.0f) );
+    EXPECT_FLOAT_EQ( ((*t2)[2]->item()), std::tanh(1.0f) );
+
+    // 3D
+    std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{
+        {{-1.0f, 0.0f}, {1.0f, 2.0f}},
+        {{3.0f, 4.0f}, {5.0f, 6.0f}}
+    }, true);
+    std::shared_ptr<Tensor> t4 = t3->tanh();
+    EXPECT_EQ(t4->shape(), (std::vector<std::size_t>{2, 2, 2}));
+    EXPECT_FLOAT_EQ( ((*t4)[0, 0, 0]->item()), std::tanh(-1.0f) );
+    EXPECT_FLOAT_EQ( ((*t4)[0, 0, 1]->item()), std::tanh(0.0f) );
+    EXPECT_FLOAT_EQ( ((*t4)[0, 1, 0]->item()), std::tanh(1.0f) );
+    EXPECT_FLOAT_EQ( ((*t4)[0, 1, 1]->item()), std::tanh(2.0f) );
+    EXPECT_FLOAT_EQ( ((*t4)[1, 0, 0]->item()), std::tanh(3.0f) );
+    EXPECT_FLOAT_EQ( ((*t4)[1, 0, 1]->item()), std::tanh(4.0f) );
+    EXPECT_FLOAT_EQ( ((*t4)[1, 1, 0]->item()), std::tanh(5.0f) );
+    EXPECT_FLOAT_EQ( ((*t4)[1, 1, 1]->item()), std::tanh(6.0f) );
+
+}
+
 TEST(TensorTest, BackpropAdd)
 {
     
@@ -991,4 +1018,66 @@ TEST(TensorTest, LogBackprop)
     EXPECT_FLOAT_EQ( t3->gradp().get()[6], 1.0f / 7.0f );
     EXPECT_FLOAT_EQ( t3->gradp().get()[7], 1.0f / 8.0f );
 }
+
+TEST(TensorTest, BackpropSub)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(2.0f, true);
+    std::shared_ptr<Tensor> t2 = std::make_shared<Tensor>(3.0f, true);
+    std::shared_ptr<Tensor> t3 = (*t1) - t2;
+    t3->backward();
+    EXPECT_FLOAT_EQ( t1->gradp().get()[0], 1.0f );
+    EXPECT_FLOAT_EQ( t2->gradp().get()[0], -1.0f );
+
+    // 3D - 2D
+    std::shared_ptr<Tensor> t4 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{{{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}}, true);
+    std::shared_ptr<Tensor> t5 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{9.0f, 10.0f}, {11.0f, 12.0f}}, true);
+    std::shared_ptr<Tensor> t6 = (*t4) - t5;
+    t6->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, t4->shape())));
+    EXPECT_FLOAT_EQ( t4->gradp().get()[0], 1.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[1], 1.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[2], 1.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[3], 1.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[4], 1.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[5], 1.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[6], 1.0f );
+    EXPECT_FLOAT_EQ( t4->gradp().get()[7], 1.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[0], -2.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[1], -2.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[2], -2.0f );
+    EXPECT_FLOAT_EQ( t5->gradp().get()[3], -2.0f );
+}
+
+TEST(TensorTest, BackpropPow)
+{
+    // 3D (2, 2, 2)
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{{{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}}, true);
+    std::shared_ptr<Tensor> t2 = t1->pow(std::make_shared<Tensor>(4.0f));
+    t2->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, t1->shape())));
+    EXPECT_FLOAT_EQ( t1->gradp().get()[0], 4.0f * std::pow(1.0f, 3.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[1], 4.0f * std::pow(2.0f, 3.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[2], 4.0f * std::pow(3.0f, 3.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[3], 4.0f * std::pow(4.0f, 3.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[4], 4.0f * std::pow(5.0f, 3.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[5], 4.0f * std::pow(6.0f, 3.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[6], 4.0f * std::pow(7.0f, 3.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[7], 4.0f * std::pow(8.0f, 3.0f) );
+}
+
+TEST(TensorTest, BackpropTanh)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<float>{-1.0f, 0.0f, 1.0f}, true);
+    std::shared_ptr<Tensor> t2 = t1->tanh();
+    t2->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, t1->shape())));
+    EXPECT_FLOAT_EQ( t1->gradp().get()[0], 1.0f - std::tanh(-1.0f) * std::tanh(-1.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[1], 1.0f - std::tanh(0.0f) * std::tanh(0.0f) );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[2], 1.0f - std::tanh(1.0f) * std::tanh(1.0f) );
+    
+
+    std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(1.0f, true);
+    std::shared_ptr<Tensor> t4 = t3->tanh();
+    t4->backward();
+    EXPECT_FLOAT_EQ( t3->gradp().get()[0], 1.0f - std::tanh(1.0f) * std::tanh(1.0f) );
+
+}
+
 
