@@ -95,7 +95,7 @@ public:
         }
         else 
         {
-            throw std::invalid_argument("Fail at init : Unsupported data type for Tensor");
+            throw std::invalid_argument("TensorInit : Unsupported data type for Tensor");
         }
 
         // Test if data shape is good
@@ -104,7 +104,7 @@ public:
             tot_shape_size *= s;
         }
         if (_size != tot_shape_size) {
-            throw std::invalid_argument("Fail at init : Data need a regular shape");
+            throw std::invalid_argument("TensorInit : Data need a regular shape");
         }
         if (_require_grad) {
             _pgrad = std::make_shared<float[]>(_size);

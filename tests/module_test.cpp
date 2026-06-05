@@ -4,6 +4,7 @@
 #include "core/Module/module.hpp"
 #include "core/Module/Modules/linear.hpp"
 #include "core/Module/Modules/tanh.hpp"
+#include "core/Module/Modules/sequential.hpp"
 
 TEST(ModuleTest, Linear) 
 {
@@ -46,5 +47,40 @@ TEST(ModuleTest, Tanh)
     EXPECT_FLOAT_EQ(input->gradp().get()[0], 1.0f - std::tanh(0.0f) * std::tanh(0.0f));
     EXPECT_FLOAT_EQ(input->gradp().get()[1], 1.0f - std::tanh(1.0f) * std::tanh(1.0f));
     EXPECT_FLOAT_EQ(input->gradp().get()[2], 1.0f - std::tanh(-1.0f) * std::tanh(-1.0f));
+}
+
+TEST(ModuleTest, Sequential) 
+{
+    Sequential seq = Sequential({
+        std::make_shared<Linear>(3, 4),
+        std::make_shared<Tanh>(),
+        std::make_shared<Linear>(4, 2)
+    });
+
+    dynamic_pointer_cast<Linear>(seq[0])->set_weight(std::make_shared<Tensor>(Tensor::fill(0.5f, {3, 4})));
+    dynamic_pointer_cast<Linear>(seq[0])->set_bias(std::make_shared<Tensor>(Tensor::fill(1.0f, {4})));
+    dynamic_pointer_cast<Linear>(seq[2])->set_weight(std::make_shared<Tensor>(Tensor::fill(0.5f, {4, 2})));
+    dynamic_pointer_cast<Linear>(seq[2])->set_bias(std::make_shared<Tensor>(Tensor::fill(1.0f, {2})));
+
+    std::shared_ptr<Tensor> input = std::make_shared<Tensor>(Tensor::fill(2.0f, {1, 3}));
+    input->set_require_grad(true);
+
+    std::shared_ptr<Tensor> output = seq(input);
+
+    EXPECT_EQ(output->shape(), (std::vector<std::size_t>{1, 2}));
+    EXPECT_EQ(seq.parameters().size(), 4);
+
+    output->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, output->shape())));
+    EXPECT_NEAR(input->gradp().get()[0], 0.002681786f, 1e-6f);
+    EXPECT_NEAR(input->gradp().get()[1], 0.002681786f, 1e-6f);
+    EXPECT_NEAR(input->gradp().get()[2], 0.002681786f, 1e-6f);
+
+    /*
+    discovered in pytorch that for this nn
+    out.grad == [0.0027, 0.0027, 0.0027] 
+    out.grad[0, 0].item() == 0.002681786
+
+    Pytorch is rounding the value in .grad but not in .grad[x].item() 
+    */
 
 }
