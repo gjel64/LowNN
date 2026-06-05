@@ -3,6 +3,7 @@
 #include <memory>
 #include "core/Module/module.hpp"
 #include "core/Module/Modules/linear.hpp"
+#include "core/Module/Modules/tanh.hpp"
 
 TEST(ModuleTest, Linear) 
 {
@@ -27,6 +28,23 @@ TEST(ModuleTest, Linear)
     for (std::size_t i = 0; i < out_features; i++) {
         EXPECT_FLOAT_EQ(output2->data()[i], expected_output[i]);
     }
+}
 
+TEST(ModuleTest, Tanh) 
+{
+    Tanh tanh;
+    std::shared_ptr<Tensor> input = std::make_shared<Tensor>(std::vector<float>{0.0f, 1.0f, -1.0f}, true);
+    std::shared_ptr<Tensor> output = tanh(input);
+
+    EXPECT_EQ(output->shape(), (std::vector<std::size_t>{3}));
+    EXPECT_FLOAT_EQ(output->data()[0], 0.0f);
+    EXPECT_FLOAT_EQ(output->data()[1], std::tanh(1.0f));
+    EXPECT_FLOAT_EQ(output->data()[2], std::tanh(-1.0f));
+
+    output->backward(std::make_shared<Tensor>(Tensor::fill(1.0f, {3})));
+
+    EXPECT_FLOAT_EQ(input->gradp().get()[0], 1.0f - std::tanh(0.0f) * std::tanh(0.0f));
+    EXPECT_FLOAT_EQ(input->gradp().get()[1], 1.0f - std::tanh(1.0f) * std::tanh(1.0f));
+    EXPECT_FLOAT_EQ(input->gradp().get()[2], 1.0f - std::tanh(-1.0f) * std::tanh(-1.0f));
 
 }
