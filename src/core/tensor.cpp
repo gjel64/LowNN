@@ -104,6 +104,9 @@ void Tensor::print()
         std::cout << "]";
     };
     print_recursive(0);
+    if (_require_grad) {
+        std::cout << " (requires grad)";
+    }
     std::cout << "\n";
 
 }
