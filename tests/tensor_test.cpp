@@ -1116,4 +1116,28 @@ TEST(TensorTest, BackpropTanh)
 
 }
 
+TEST(TensorTest, BackpropMean)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}}, true);
+    std::shared_ptr<Tensor> t2 = t1->mean();
+    t2->backward();
+    EXPECT_FLOAT_EQ( t1->gradp().get()[0], 0.25f );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[1], 0.25f );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[2], 0.25f );
+    EXPECT_FLOAT_EQ( t1->gradp().get()[3], 0.25f );
+
+    // 3D
+    std::shared_ptr<Tensor> t3 = std::make_shared<Tensor>(std::vector<std::vector<std::vector<float>>>{{{1.0f, 2.0f}, {3.0f, 4.0f}}, {{5.0f, 6.0f}, {7.0f, 8.0f}}}, true);
+    std::shared_ptr<Tensor> t4 = t3->mean();
+    t4->backward();
+    EXPECT_FLOAT_EQ( t3->gradp().get()[0], 0.125f );
+    EXPECT_FLOAT_EQ( t3->gradp().get()[1], 0.125f );
+    EXPECT_FLOAT_EQ( t3->gradp().get()[2], 0.125f );
+    EXPECT_FLOAT_EQ( t3->gradp().get()[3], 0.125f );
+    EXPECT_FLOAT_EQ( t3->gradp().get()[4], 0.125f );
+    EXPECT_FLOAT_EQ( t3->gradp().get()[5], 0.125f );
+    EXPECT_FLOAT_EQ( t3->gradp().get()[6], 0.125f );
+    EXPECT_FLOAT_EQ( t3->gradp().get()[7], 0.125f );
+}
+
 

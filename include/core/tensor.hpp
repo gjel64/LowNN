@@ -17,6 +17,7 @@
 #include "core/GradFn/exp_grad_fn.hpp"
 #include "core/GradFn/log_grad_fn.hpp"
 #include "core/GradFn/pow_grad_fn.hpp"
+#include "core/GradFn/mean_grad_fn.hpp"
 
 /* must TODO:
     - indexing with ":" and negative indexing

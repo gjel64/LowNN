@@ -153,7 +153,8 @@ std::shared_ptr<Tensor> Tensor::reshape(std::vector<std::size_t> new_shape)
             strides[i] = new_shape[i + 1] * strides[i + 1];
         }
     }
-    return std::make_shared<Tensor>(_pdata, new_shape, _offset, strides, _require_grad, _parents);
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(_pdata, new_shape, _offset, strides, _require_grad, _parents);
+    return result;
 }
 
 
@@ -746,7 +747,13 @@ std::shared_ptr<Tensor> Tensor::mean()
         sum += _pdata[_offset + i];
     }
     float mean = sum / _size;
-    return std::make_shared<Tensor>(mean);
+
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(mean, this->require_grad());
+    std::vector<std::weak_ptr<Tensor>> inputs = { shared_from_this() };
+    std::shared_ptr<GradFn> grad_fn = std::make_shared<MeanGradFn>(inputs, std::weak_ptr<Tensor>(result));
+    result->_set_grad_fn(grad_fn);
+
+    return result;
 }
 
 
