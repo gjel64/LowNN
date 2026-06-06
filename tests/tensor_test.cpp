@@ -548,6 +548,42 @@ TEST(TensorTest, Tanh)
 
 }
 
+TEST(TensorTest, mean)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
+    std::shared_ptr<Tensor> t2 = t1->mean();
+    EXPECT_EQ(t2->shape(), (std::vector<std::size_t>{1}));
+    EXPECT_FLOAT_EQ( (t2->item()), 2.5f );
+}
+
+TEST(TensorTest, reshape)
+{
+    std::shared_ptr<Tensor> t1 = std::make_shared<Tensor>(std::vector<std::vector<float>>{{1.0f, 2.0f}, {3.0f, 4.0f}});
+    std::shared_ptr<Tensor> t2 = t1->reshape(std::vector<std::size_t>{4});
+    EXPECT_EQ(t2->shape(), (std::vector<std::size_t>{4}));
+    EXPECT_FLOAT_EQ( ((*t2)[0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t2)[1]->item()), 2.0f );
+    EXPECT_FLOAT_EQ( ((*t2)[2]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t2)[3]->item()), 4.0f );
+
+    std::shared_ptr<Tensor> t3 = t1->reshape(std::vector<std::size_t>{1, 4});
+    EXPECT_EQ(t3->shape(), (std::vector<std::size_t>{1, 4}));
+    EXPECT_FLOAT_EQ( ((*t3)[0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t3)[0, 1]->item()), 2.0f );
+    EXPECT_FLOAT_EQ( ((*t3)[0, 2]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t3)[0, 3]->item()), 4.0f );
+
+    std::shared_ptr<Tensor> t4 = t1->reshape(std::vector<std::size_t>{4, 1});
+    EXPECT_EQ(t4->shape(), (std::vector<std::size_t>{4, 1}));
+    EXPECT_FLOAT_EQ( ((*t4)[0, 0]->item()), 1.0f );
+    EXPECT_FLOAT_EQ( ((*t4)[1, 0]->item()), 2.0f );
+    EXPECT_FLOAT_EQ( ((*t4)[2, 0]->item()), 3.0f );
+    EXPECT_FLOAT_EQ( ((*t4)[3, 0]->item()), 4.0f );
+
+    EXPECT_THROW( t1->reshape(std::vector<std::size_t>{3}), std::invalid_argument );
+    EXPECT_THROW( t1->reshape(std::vector<std::size_t>{2, 3}), std::invalid_argument );
+}
+
 TEST(TensorTest, BackpropAdd)
 {
     

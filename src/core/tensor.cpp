@@ -136,6 +136,26 @@ void Tensor::print_grad()
 
 }
 
+std::shared_ptr<Tensor> Tensor::reshape(std::vector<std::size_t> new_shape) 
+{
+    std::size_t new_size = 1;
+    for (std::size_t s : new_shape){
+        new_size *= s;
+    }
+    if (new_size != _size) {
+        throw std::invalid_argument("New shape must have the same number of elements");
+    }
+
+    // calc strides
+    std::vector<std::size_t> strides(new_shape.size(), 1);
+    if (new_shape.size() > 0) {
+        for (int i = new_shape.size() - 2; i >= 0; i--) {
+            strides[i] = new_shape[i + 1] * strides[i + 1];
+        }
+    }
+    return std::make_shared<Tensor>(_pdata, new_shape, _offset, strides, _require_grad, _parents);
+}
+
 
 
 // ------------------------ Static Methods ------------------------ 
@@ -166,6 +186,8 @@ Tensor Tensor::randn(const std::vector<std::size_t> shape, float mean, float std
     }
     return Tensor(data, shape, 0, size);
 }
+
+
 
 // ------------------------ Operators ------------------------ 
 
@@ -717,6 +739,15 @@ std::shared_ptr<Tensor> Tensor::tanh()
         ((*((*this) * std::make_shared<Tensor>(2.0f))->exp()) + std::make_shared<Tensor>(1.0f));
 }
 
+std::shared_ptr<Tensor> Tensor::mean()
+{
+    float sum = 0.0f;
+    for (std::size_t i = 0; i < _size; i++) {
+        sum += _pdata[_offset + i];
+    }
+    float mean = sum / _size;
+    return std::make_shared<Tensor>(mean);
+}
 
 
 // ------------------------ Setters -----------------------

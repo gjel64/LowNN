@@ -19,8 +19,7 @@
 #include "core/GradFn/pow_grad_fn.hpp"
 
 /* must TODO:
-    - indexing with : and negative indexing
-    - autograd (grad_fn, grad_accumulator, output_nr)
+    - indexing with ":" and negative indexing
     - flatten method (remove 1s dims)
     - add "with no_grad"
     - add view method (for reshape, transpose...)
@@ -40,11 +39,11 @@ matmul |     yes      |      yes
 pow    |     yes      |      yes
 abs    |     yes      |      yes
 relu   |     yes      |      yes
-mean   |     no       |      no
+mean   |     yes      |      no
 log    |     yes      |      yes
 exp    |     yes      |      yes
 view   |     no       |      no
-reshape|     no       |      no
+reshape|     yes      |      no
 tanh   |     yes      |      yes
 */
 
@@ -215,6 +214,8 @@ public:
     std::shared_ptr<Tensor> log();
     std::shared_ptr<Tensor> exp();
     std::shared_ptr<Tensor> tanh();
+    std::shared_ptr<Tensor> mean();
+    std::shared_ptr<Tensor> reshape(std::vector<std::size_t> new_shape);
 
 
     // -------- Getters --------
